@@ -15,6 +15,11 @@ format:
   html:
     theme: cosmo
     css: styles.css
+  epub:
+    title: "Genesis"
+    author: "Moses"
+    toc: true
+    # Add any other relevant options here
 
 editor: visual
 
