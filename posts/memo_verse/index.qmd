@@ -1,0 +1,18 @@
+---
+title: "memo_verse"
+author: "granPiero" 
+date: "2024-12-28"
+categories: [bible]
+format: 
+  html:
+    comments:
+      utterances: 
+        repo: "fischerpj/ynot"
+---
+
+> This is *on-your-device-only-persistent-memory* of **bible references,** that you accumulate on the fly. *However one distinct memory zone per browser*
+
+::: {#mainAnchor}
+:::
+
+<script src="rapid_ui.js"></script>
