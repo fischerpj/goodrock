@@ -7,7 +7,18 @@
 3.  Setup GIT as below
 4.  output_dir: **docs** in \_quarto.yml
 5.  github enable **Pages** for publishing /docs
+6.  2502 resume push this
 
 ### ... OK or create a new repository on the command line
 
-echo "\# goodrock" \>\> README.md git init git add README.md git commit -m "first commit" git branch -M main git remote add origin https://github.com/fischerpj/goodrock.git git push -u origin main
+echo "\# goodrock" \>\> README.md
+
+git init git add README.md
+
+git commit -m "first commit"
+
+git branch -M main
+
+git remote add origin https://github.com/fischerpj/goodrock.git
+
+git push -u origin main
