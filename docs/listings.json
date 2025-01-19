@@ -1,5 +1,13 @@
 [
   {
+    "listing": "/about.html",
+    "items": [
+      "/posts/memo_verse/index.html",
+      "/posts/welcome/index.html",
+      "/posts/post-with-code/index.html"
+    ]
+  },
+  {
     "listing": "/index.html",
     "items": [
       "/posts/memo_verse/index.html",
