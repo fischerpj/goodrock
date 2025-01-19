@@ -7,7 +7,7 @@
 3.  Setup GIT as below
 4.  output_dir: **docs** in \_quarto.yml
 5.  github enable **Pages** for publishing /docs
-6.  2502 resume push this and **MOVED TO RV5/goodrock**
+6.  2502 resume push this and **MOVED TO RV5/goodrock** with memo_verse
 
 ### ... OK or create a new repository on the command line
 
