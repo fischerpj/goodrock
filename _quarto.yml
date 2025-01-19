@@ -12,8 +12,7 @@ website:
 
 format:
   html:
-    theme: cosmo
+    theme: lumen
     css: styles.css
 
 editor: visual
-
