@@ -1,3 +1,4 @@
+// 2502 keep unique in reverse order
 // =============================================================================
 // here NEW mini_storage
 
@@ -87,15 +88,21 @@ class miniStorage {
     keepUniqueRefid() {
       const refidSet = new Set();
       const uniqueArray = [];
+      
+      // work in reverse order
+//      const reverseCache = this.getReverse();
+//      console.log("reverseCache in 93" + reverseCache.toString());
 
-      this.#cachedValue.forEach(element => {
+//      this.#cachedValue.forEach(element => {
+     this.getReverse().forEach(element => {
         if (!refidSet.has(element.refid) && element.refid !== "") {
           refidSet.add(element.refid);
           uniqueArray.push(element);
         }
       });
 
-      this.#cachedValue = uniqueArray;
+//      this.#cachedValue = uniqueArray;
+      this.#cachedValue = uniqueArray.slice().reverse();
     }
     
     // Method to retrieve UNIQUE refids
