@@ -121,9 +121,19 @@ class miniStorage {
         return JSON.parse(localStorage.getItem(key));
     }
     
+       // get RAW storage
+    #getItemReverse(key = this.#defaultKeyId) {
+        return JSON.parse(localStorage.getItem(key)).slice().reverse();
+    }
+    
     // set RAW storage
     #setItem(key = this.#defaultKeyId, value) {
         localStorage.setItem(key, JSON.stringify(value));
+    }
+    
+      // set RAW storage
+    #setItemReverse(key = this.#defaultKeyId, value) {
+        localStorage.setItem(key, JSON.stringify(value.slice().reverse()));
     }
     
     // Getter for initValue
@@ -141,12 +151,12 @@ mymini.addElement("eph2:9");
 mymini.addElement("mark7:21");
 mymini.addElement("matt6:33");
 mymini.addElement("matt7:1");
-console.log(mymini.cache);
-console.log(mymini.getRandom());
-console.log(mymini.getLast());
-console.log(mymini.getUniqueRefids());
-console.log(mymini.getReverse());
-mymini.removeLastElement();
+//console.log(mymini.cache);
+//console.log(mymini.getRandom());
+//console.log(mymini.getLast());
+//console.log(mymini.getUniqueRefids());
+//console.log(mymini.getReverse());
+//mymini.removeLastElement();
 console.log(mymini.cache);
 
 // =============================================================================
