@@ -21,6 +21,7 @@ class miniStorage {
           this.#cachedValue = [this.#initValue];
           this.write_storage();
         }
+        // R1
         this.read_cache();
 ////        this.read_cache_map();
     }
@@ -85,7 +86,7 @@ class miniStorage {
         this.#setItem(this.#defaultKeyId, this.#cachedValue );
     }
     
-    // read-through cache from storage with LOGIC of unique refids
+    // R1  read-through cache from storage with LOGIC of unique refids
     read_cache() {
         this.#cachedValue = this.#getItem(this.#defaultKeyId);
         this.keepUniqueRefid();
@@ -104,7 +105,7 @@ class miniStorage {
         return this.#cachedMap;
     }  
     
-    // Getter for cachedValue
+    // R3  Getter for cachedValue
     get cache() {
         return this.#cachedValue;
     }  
@@ -181,7 +182,7 @@ const mymini = new miniStorage();
 //mymini.addElement("mark7:21");
 //mymini.addElement("matt6:33");
 //mymini.addElement("matt7:1");
-//console.log(mymini.cache);
+console.log(mymini.cache);
 //console.log(mymini.getRandom());
 //console.log(mymini.getLast());
 //console.log(mymini.getUniqueRefids());
