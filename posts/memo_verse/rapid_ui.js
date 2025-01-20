@@ -8,11 +8,11 @@ class miniStorage {
     #defaultKeyId;
     #initValue;
     #cachedValue;
-    #cachedMap;
+    #mappedValue;
 
     constructor(defaultKeyId = 'refidArray', 
                 initValue    = "gen1:1") {
-        this.#version       = '0.0.12'; 
+        this.#version       = '0.0.13'; 
         this.#defaultKeyId  = defaultKeyId;
         this.#initValue     = this.timestamp_(initValue);
         // check if exists
@@ -23,7 +23,7 @@ class miniStorage {
         }
         // R1
         this.read_cache();
-////        this.read_cache_map();
+        this.read_map();
     }
     
     getLast() {
@@ -52,7 +52,7 @@ class miniStorage {
     
     // Function to add an element with logic for existing keys
     addElementToMap(key) {
-      const map = this.#cachedMap;
+      const map = this.#mappedValue;
       const lowerCaseKey = key.toLowerCase();
         if (map.has(lowerCaseKey)) {
           const existingValue = map.get(lowerCaseKey);
@@ -61,7 +61,7 @@ class miniStorage {
       } else {
         map.set(lowerCaseKey, timestamp_(key));
       }
-      this.#cachedMap = map;
+      this.#mappedValue = map;
     }
     
        // add an element to Array
@@ -92,17 +92,18 @@ class miniStorage {
         this.keepUniqueRefid();
     }
     
-    // read-through cache from storage with LOGIC of unique refids
-    read_cache_map() {
-        const miArray = this.#getItem(this.#defaultKeyId);
+    // R2  read-through cache from storage with LOGIC of unique refids
+    read_map() {
+        this.read_cache();
+        const miArray = this.#cachedValue;
     // Transform the array into a Map with ref as the key
-        const mimap = new Map(miArray.map(item => [item.refid, { ts: item.ts}]));
-        this.#cachedMap = mimap;
+        const miMap = new Map(miArray.map(item => [item.refid, { ts: item.ts}]));
+        this.#mappedValue = miMap;
     }
     
-    // Getter for cachedValue
-    get cacheMap() {
-        return this.#cachedMap;
+    // R4  Getter for mappedValue
+    get map() {
+        return this.#mappedValue;
     }  
     
     // R3  Getter for cachedValue
@@ -182,7 +183,8 @@ const mymini = new miniStorage();
 //mymini.addElement("mark7:21");
 //mymini.addElement("matt6:33");
 //mymini.addElement("matt7:1");
-console.log(mymini.cache);
+console.log("R3" + mymini.cache);
+console.log("R4" + mymini.map);
 //console.log(mymini.getRandom());
 //console.log(mymini.getLast());
 //console.log(mymini.getUniqueRefids());
