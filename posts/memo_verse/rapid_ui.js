@@ -1,4 +1,5 @@
 // 2502 keep unique in reverse order
+// 0.0.12 no mymini.add 
 // =============================================================================
 // here NEW mini_storage
 
@@ -7,10 +8,11 @@ class miniStorage {
     #defaultKeyId;
     #initValue;
     #cachedValue;
+    #cachedMap;
 
     constructor(defaultKeyId = 'refidArray', 
                 initValue    = "gen1:1") {
-        this.#version       = '0.0.11'; 
+        this.#version       = '0.0.12'; 
         this.#defaultKeyId  = defaultKeyId;
         this.#initValue     = this.timestamp_(initValue);
         // check if exists
@@ -20,6 +22,7 @@ class miniStorage {
           this.write_storage();
         }
         this.read_cache();
+////        this.read_cache_map();
     }
     
     getLast() {
@@ -44,6 +47,20 @@ class miniStorage {
       new_array.push(item);
       this.#cachedValue = new_array;
       this.write_storage();
+    }
+    
+    // Function to add an element with logic for existing keys
+    addElementToMap(key) {
+      const map = this.#cachedMap;
+      const lowerCaseKey = key.toLowerCase();
+        if (map.has(lowerCaseKey)) {
+          const existingValue = map.get(lowerCaseKey);
+          map.delete(lowerCaseKey);
+          map.set(lowerCaseKey, existingValue);
+      } else {
+        map.set(lowerCaseKey, timestamp_(key));
+      }
+      this.#cachedMap = map;
     }
     
        // add an element to Array
@@ -73,6 +90,19 @@ class miniStorage {
         this.#cachedValue = this.#getItem(this.#defaultKeyId);
         this.keepUniqueRefid();
     }
+    
+    // read-through cache from storage with LOGIC of unique refids
+    read_cache_map() {
+        const miArray = this.#getItem(this.#defaultKeyId);
+    // Transform the array into a Map with ref as the key
+        const mimap = new Map(miArray.map(item => [item.refid, { ts: item.ts}]));
+        this.#cachedMap = mimap;
+    }
+    
+    // Getter for cachedValue
+    get cacheMap() {
+        return this.#cachedMap;
+    }  
     
     // Getter for cachedValue
     get cache() {
@@ -140,24 +170,24 @@ class miniStorage {
     get initValue() {
         return this.#initValue;
     } 
- 
+
 } // end of class miniStorage
 
 // USE CASES
 const mymini = new miniStorage();
 //console.log(JSON.stringify(mymini.cache));
-mymini.addElement("eph2:9");
+//mymini.addElement("eph2:9");
 //console.log(JSON.stringify(mymini.cache));
-mymini.addElement("mark7:21");
-mymini.addElement("matt6:33");
-mymini.addElement("matt7:1");
+//mymini.addElement("mark7:21");
+//mymini.addElement("matt6:33");
+//mymini.addElement("matt7:1");
 //console.log(mymini.cache);
 //console.log(mymini.getRandom());
 //console.log(mymini.getLast());
 //console.log(mymini.getUniqueRefids());
 //console.log(mymini.getReverse());
-//mymini.removeLastElement();
-console.log(mymini.cache);
+//mymini.read_cache_map();
+//console.log(mymini.cache);
 
 // =============================================================================
 

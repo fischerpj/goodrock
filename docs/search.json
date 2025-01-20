@@ -11,7 +11,7 @@
     "href": "posts/memo_verse/index.html",
     "title": "memo_verse",
     "section": "",
-    "text": "This is on-your-device-only-persistent-memory of bible references, that you accumulate on the fly. However one distinct memory zone per browser"
+    "text": "This is on-your-device-only-persistent-memory of bible references, that you accumulate on the fly. However one distinct memory zone per browser\n\nTODO: use cachedMap althrough"
   },
   {
     "objectID": "about.html",
