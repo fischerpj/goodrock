@@ -1,4 +1,6 @@
 // 2502 keep unique in reverse order
+// 0.0.14 refOnlyKeys + ?version
+// 0.0.13 getUniqueKeys 
 // 0.0.12 no mymini.add 
 // =============================================================================
 // here NEW mini_storage
@@ -7,12 +9,12 @@ class miniStorage {
     #version;
     #defaultKeyId;
     #initValue;
-    #cachedValue;
-    #mappedValue;
+    #cachedValue; // an Array
+    #mappedValue; // a Map
 
     constructor(defaultKeyId = 'refidArray', 
                 initValue    = "gen1:1") {
-        this.#version       = '0.0.12'; 
+        this.#version       = '0.0.14 refOnlyKeys'; 
         this.#defaultKeyId  = defaultKeyId;
         this.#initValue     = this.timestamp_(initValue);
         // check if exists
@@ -22,7 +24,7 @@ class miniStorage {
           this.write_storage();
         }
         // R1
-        this.read_cache();
+  //      this.read_cache();
         this.read_map();
     }
     
@@ -64,7 +66,7 @@ class miniStorage {
       this.#mappedValue = map;
     }
     
-       // add an element to Array
+    // remove an element to Array
     removeLastElement() {
       const new_array = this.#cachedValue;
       if (new_array.length > 0) {
@@ -79,6 +81,9 @@ class miniStorage {
       const timestamp = new Date().toISOString();
       return {refid: obj, ts: timestamp}
     }
+    
+    // ======================================================================
+    // STORAGE IOs
     
     // write-through storage via cache
     write_storage() {
@@ -98,6 +103,7 @@ class miniStorage {
         const miArray = this.#cachedValue;
     // Transform the array into a Map with ref as the key
         const miMap = new Map(miArray.map(item => [item.refid, { ts: item.ts}]));
+        console.log(miMap);
         this.#mappedValue = miMap;
     }
     
@@ -109,6 +115,11 @@ class miniStorage {
     // R3  Getter for cachedValue
     get cache() {
         return this.#cachedValue;
+    }  
+    
+    //  Getter for version
+    get version() {
+        return this.#version;
     }  
     
     // Setter for cachedValue
@@ -139,13 +150,18 @@ class miniStorage {
     
     // Method to retrieve UNIQUE refids
     getUniqueRefids() {
-    const refidSet = new Set();
-    
-    this.#cachedValue.forEach(element => {
+      const refidSet = new Set();
+      this.#cachedValue.forEach(element => {
       refidSet.add(element.refid);
-    });
-    
+      });
     return Array.from(refidSet);
+    }
+    
+    // Method to return KEYSie unique from MAP UNIQUE
+    // is a subsitute to getUniqueRefids
+    getUniqueKeys() {
+      console.log(this.#mappedValue.keys());
+      return this.#mappedValue.keys();
     }
     
     // get RAW storage
@@ -172,6 +188,14 @@ class miniStorage {
     get initValue() {
         return this.#initValue;
     } 
+    
+    // Function to return stringified object of Map keys
+    refstring_() {
+      const map = this.#mappedValue;
+      const keys = Array.from(map.keys());
+      console.log(keys);
+      return JSON.stringify(keys);
+}
 
 } // end of class miniStorage
 
@@ -183,14 +207,14 @@ const mymini = new miniStorage();
 //mymini.addElement("mark7:21");
 //mymini.addElement("matt6:33");
 //mymini.addElement("matt7:1");
-console.log("R3" + mymini.cache);
-console.log("R4" + mymini.map);
+//console.log("R3" + mymini.cache);
+//console.log("R4" + mymini.map);
 //console.log(mymini.getRandom());
 //console.log(mymini.getLast());
 //console.log(mymini.getUniqueRefids());
 //console.log(mymini.getReverse());
 //mymini.read_cache_map();
-//console.log(mymini.cache);
+console.log(mymini.version);
 
 // =============================================================================
 
@@ -295,6 +319,7 @@ class MUI {
     this.randomButton.addEventListener('click', () => this.viewRandom());
     this.allButton.addEventListener('click', () => this.viewAll());
     this.refButton.addEventListener('click', () => this.refOnly());
+//    this.refButton.addEventListener('click', () => this.refOnlyKeys());
     this.deleteButton.addEventListener('click', () => this.removeLastRef());
   }
 
@@ -308,6 +333,9 @@ class MUI {
     switch(inputValue) {
       case null :
         console.log( "NULL input does nothing");
+        break;
+      case "?version" :
+        console.log( "version: "+ this.storageArray.version);
         break;
       default:
         console.log( "added NOT null input");
@@ -334,6 +362,16 @@ class MUI {
   
   async refOnly() {
      const result = JSON.stringify(this.storageArray.getUniqueRefids());
+     this.ul = document.getElementById('resultList');  
+     const li = document.createElement('li');
+     li.innerHTML = result;
+     this.ul.innerHTML = null;
+     this.ul.appendChild(li);
+     console.log(result);
+  }
+  
+    async refOnlyKeys() {
+     const result = JSON.stringify(this.storageArray.refstring_());
      this.ul = document.getElementById('resultList');  
      const li = document.createElement('li');
      li.innerHTML = result;
@@ -386,18 +424,6 @@ class MUI {
             const ul = document.getElementById('resultList');
             const liElements = [];                                  // li array
  
-/*          UNNECCESSARY first  
-            // Create LI elements and keep references in an array
-            arr.forEach(obj => {
-              const li = document.createElement('li');
-              li.textContent = 'Loading...'; // Initial placeholder text
-// want to deferr this to gain execution time
-              ul.appendChild(li);
-// but li element is created 
-              liElements.push(li);
-            });
-*/
-
             // Fetch data in parallel and update LI elements as promises resolve
             const fetchPromises = arr.map(async (obj, index) => {
               // Generate URL from refid property
