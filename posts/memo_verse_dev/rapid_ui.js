@@ -1,4 +1,5 @@
 // 2502 keep unique in reverse order
+// 0.0.15 help button + display
 // 0.0.14 refOnlyKeys + ?version
 // 0.0.13 getUniqueKeys 
 // 0.0.12 no mymini.add 
@@ -298,6 +299,10 @@ class MUI {
     this.deleteButton = document.createElement('button');
     this.deleteButton.textContent = 'Del';
     this.deleteButton.classList.add("btn", "btn-danger");
+ 
+    this.helpButton = document.createElement('button');
+    this.helpButton.textContent = 'H';
+    this.helpButton.classList.add("btn", "btn-primary");
     
     this.buttonDiv = document.createElement('div');
     this.buttonDiv.id = 'buttonDiv';
@@ -308,6 +313,7 @@ class MUI {
     this.buttonDiv.appendChild(this.allButton);
     this.buttonDiv.appendChild(this.refButton);
     this.buttonDiv.appendChild(this.deleteButton);
+    this.buttonDiv.appendChild(this.helpButton);
 
   // Appends two divs to the container
     this.inputDiv.appendChild(this.rowDiv);
@@ -321,6 +327,7 @@ class MUI {
     this.refButton.addEventListener('click', () => this.refOnly());
 //    this.refButton.addEventListener('click', () => this.refOnlyKeys());
     this.deleteButton.addEventListener('click', () => this.removeLastRef());
+    this.helpButton.addEventListener('click', () => this.helpme());
   }
 
   async viewInput() {
@@ -350,6 +357,11 @@ class MUI {
     this.inputField.value = null;
   }
 
+  async helpme() {
+  //  
+    alert("H;");  
+  }
+  
   async viewRandom() {
   //  
     const result = await this.augmentAndPopulateArray(this.storageArray.getRandom());
