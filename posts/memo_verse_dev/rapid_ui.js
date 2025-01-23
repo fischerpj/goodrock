@@ -15,7 +15,7 @@ class miniStorage {
 
     constructor(defaultKeyId = 'refidArray', 
                 initValue    = "gen1:1") {
-        this.#version       = '0.0.14 refOnlyKeys'; 
+        this.#version       = '0.0.15 help button display'; 
         this.#defaultKeyId  = defaultKeyId;
         this.#initValue     = this.timestamp_(initValue);
         // check if exists
@@ -359,7 +359,12 @@ class MUI {
 
   async helpme() {
   //  
-    alert("H;");  
+    const ul = document.getElementById('resultList');
+      ul.innerHTML = null;
+    const liElements = [];
+    const li = document.createElement('li');
+      li.textContent = this.storageArray.version; // Initial placeholder text
+      ul.appendChild(li);
   }
   
   async viewRandom() {
