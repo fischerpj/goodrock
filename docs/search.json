@@ -18,14 +18,14 @@
     "href": "index.html",
     "title": "goodrock",
     "section": "",
-    "text": "memo_verse_DEV\n\n\n\n\n\n\nbible\n\n\n\n\n\n\n\n\n\nJan 23, 2025\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nmemo_verse\n\n\n\n\n\n\nbible\n\n\n\n\n\n\n\n\n\nDec 28, 2024\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nApr 10, 2024\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nApr 7, 2024\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
+    "text": "mapStorage\n\n\n\n\n\n\nbible\n\n\n\n\n\n\n\n\n\nJan 23, 2025\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nmemo_verse_DEV\n\n\n\n\n\n\nbible\n\n\n\n\n\n\n\n\n\nJan 23, 2025\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nmemo_verse\n\n\n\n\n\n\nbible\n\n\n\n\n\n\n\n\n\nDec 28, 2024\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nApr 10, 2024\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nApr 7, 2024\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
     "section": "",
-    "text": "About this blog named goodrock having listing of posts.\n\n\n\n\n\n\n\n\n\n\n\n\nmemo_verse\n\n\n\n\n\n\n\n\n\n\n\nDec 28, 2024\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\n\n\n\n\nApr 7, 2024\n\n\nTristan O’Malley\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\n\n\n\n\n\n\n\n\nApr 10, 2024\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\nmemo_verse_DEV\n\n\n\n\n\n\n\n\n\n\n\nJan 23, 2025\n\n\ngranPiero\n\n\n\n\n\n\nNo matching items"
+    "text": "About this blog named goodrock having listing of posts.\n\n\n\n\n\n\n\n\n\n\n\n\nmemo_verse\n\n\n\n\n\n\n\n\n\n\n\nDec 28, 2024\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nmapStorage\n\n\n\n\n\n\n\n\n\n\n\nJan 23, 2025\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\n\n\n\n\nApr 7, 2024\n\n\nTristan O’Malley\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\n\n\n\n\n\n\n\n\nApr 10, 2024\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\nmemo_verse_DEV\n\n\n\n\n\n\n\n\n\n\n\nJan 23, 2025\n\n\ngranPiero\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/memo_verse/index.html",
@@ -40,5 +40,12 @@
     "title": "Post With Code",
     "section": "",
     "text": "This is a post with executable code.\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "posts/mapStorage/index.html",
+    "href": "posts/mapStorage/index.html",
+    "title": "mapStorage",
+    "section": "",
+    "text": "Based on class mapStorage only, in console."
   }
 ]

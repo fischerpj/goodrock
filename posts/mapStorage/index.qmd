@@ -1,0 +1,16 @@
+---
+title: "mapStorage"
+author: "granPiero" 
+date: "2025-01-23"
+categories: [bible]
+image: "brain.jpg"
+format: 
+  html:
+    comments:
+      utterances: 
+        repo: "fischerpj/ynot"
+---
+
+> Based on class mapStorage only, in console.
+
+<script src="map_storage.js"></script>

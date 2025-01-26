@@ -12,7 +12,17 @@ class miniStorage {
     #initValue;
     #cachedValue; // an Array
     #mappedValue; // a Map
-
+    
+    /* the structure is 'Array Of Objects'
+    [
+      {"refid":"gen1:1","ts":"2024-12-27T18:40:00.554Z"},
+      {"refid":"ps40:7-8","ts":"2025-01-19T19:17:23.028Z"},
+      {"refid":"eph2:9","ts":"2025-01-19T19:36:49.160Z"},
+      {"refid":"mark7:21","ts":"2025-01-19T19:36:49.160Z"},
+      {"refid":"matt6:33","ts":"2025-01-19T19:36:49.160Z"},
+      {"refid":"is40:1","ts":"2025-01-23T16:01:11.949Z"}
+    ]
+*/
     constructor(defaultKeyId = 'refidArray', 
                 initValue    = "gen1:1") {
         this.#version       = '0.0.15 help button display'; 
@@ -28,6 +38,26 @@ class miniStorage {
   //      this.read_cache();
         this.read_map();
     }
+  
+    // =========================================================================
+    // MAP methods
+    
+     randomMap_() {
+      const randomMap = new Map(); 
+        const randomKey = this.randomKey_()[0];
+      randomMap.set(randomKey, this.#mappedValue.get(randomKey));
+      return randomMap;
+    }
+    
+    // Method gives a random key 
+    randomKey_() {
+      const mykeys = Array.from(this.#mappedValue.keys());
+      const randomIndex = Math.floor(Math.random() * mykeys.length);
+      return mykeys.slice(randomIndex, randomIndex + 1);
+    }
+    
+    // =========================================================================
+    // ARRAY methods
     
     getLast() {
         return this.#cachedValue.slice(-1);
@@ -39,6 +69,8 @@ class miniStorage {
       return array.slice(randomIndex, randomIndex + 1);
     }
 
+   
+    
     getReverse() {
       const array = this.#cachedValue;
       return array.slice().reverse();
@@ -83,7 +115,7 @@ class miniStorage {
       return {refid: obj, ts: timestamp}
     }
     
-    // ======================================================================
+    // =========================================================================
     // STORAGE IOs
     
     // write-through storage via cache
@@ -107,6 +139,9 @@ class miniStorage {
         console.log(miMap);
         this.#mappedValue = miMap;
     }
+    
+    // =========================================================================
+    // GETTERs and SETTERs
     
     // R4  Getter for mappedValue
     get map() {
@@ -158,12 +193,7 @@ class miniStorage {
     return Array.from(refidSet);
     }
     
-    // Method to return KEYSie unique from MAP UNIQUE
-    // is a subsitute to getUniqueRefids
-    getUniqueKeys() {
-      console.log(this.#mappedValue.keys());
-      return this.#mappedValue.keys();
-    }
+ 
     
     // get RAW storage
     #getItem(key = this.#defaultKeyId) {
@@ -196,26 +226,52 @@ class miniStorage {
       const keys = Array.from(map.keys());
       console.log(keys);
       return JSON.stringify(keys);
-}
-
+    }
+    
+    // CONVERSION
+    
+    // convert Array (cachedValue) to Map (mappedValue)
+    arrToMap_() {
+    // current Array value   
+        const miArray = this.#cachedValue;
+    // Transform the array into a Map with ref as the key
+        const miMap = new Map(miArray.map(item => [item.refid, { ts: item.ts}]));
+        this.#mappedValue = miMap;
+    }
+    
+    mapToArray_() {
+      // current Map value
+      const myMap = this.#mappedValue;
+      const arrayFromMap = [];
+        myMap.forEach((value, key) => {
+        arrayFromMap.push({refid: key, ...value});
+      });
+    this.#cachedValue = arrayFromMap;
+    } 
+ 
 } // end of class miniStorage
 
 // USE CASES
 const mymini = new miniStorage();
+console.log(mymini.version);
 //console.log(JSON.stringify(mymini.cache));
 //mymini.addElement("eph2:9");
 //console.log(JSON.stringify(mymini.cache));
 //mymini.addElement("mark7:21");
 //mymini.addElement("matt6:33");
-//mymini.addElement("matt7:1");
+mymini.addElement("matt7:8");
+console.log(mymini.cache);
 //console.log("R3" + mymini.cache);
 //console.log("R4" + mymini.map);
 //console.log(mymini.getRandom());
 //console.log(mymini.getLast());
 //console.log(mymini.getUniqueRefids());
-//console.log(mymini.getReverse());
+//mymini.arrToMap_();
+//console.log(mymini.mapToArray_());
 //mymini.read_cache_map();
-console.log(mymini.version);
+console.log(mymini.map);
+console.log(mymini.randomKey_());
+console.log(mymini.randomMap_());
 
 // =============================================================================
 
