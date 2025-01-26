@@ -22,11 +22,11 @@ class MapStor {
 
     if (refEntries) {
       const entriesArray = JSON.parse(refEntries);
-      console.log(entriesArray);
+      console.log("Loaded refEntries " + entriesArray);
       this.#refMap = new Map(entriesArray);
     } else if (refidArray) {
       const entriesArray = JSON.parse(refidArray);
-      console.log(entriesArray);
+      console.log("Loaded refidArray " + entriesArray);
       const refMap = new Map(entriesArray.map(item => [item.refid, {ts: item.ts, category: 'biblical'}]));
       this.#refMap = refMap;
     } else {
@@ -35,10 +35,51 @@ class MapStor {
     }
   }
 
+// =============================================================================
+// GETTER methods
+
   // Getter for refMap
   get refMap() {
     return this.#refMap;
   }
+  
+  // Getter for refEntries
+  get refEntries() {
+    return JSON.stringify(Array.from(this.#refMap.entries()));
+  }
+  
+  // Getter for refKeys
+  get refKeys() {
+    return Array.from(this.#refMap.keys());
+  }
+  
+  // Getter for the last entry in refMap
+  get lastEntry() {
+    const keys = Array.from(this.#refMap.keys());
+    const lastKey = keys[keys.length - 1];
+    return new Map([[lastKey, this.#refMap.get(lastKey)]]);
+  }
+
+  // Getter for a random entry in refMap
+  get randomEntry() {
+    const keys = Array.from(this.#refMap.keys());
+    const randomKey = keys[Math.floor(Math.random() * keys.length)];
+    return new Map([[randomKey, this.#refMap.get(randomKey)]]);
+  }
+  
+  // Getter for refKeys reversed
+  get refKeysReversed() {
+    return Array.from(this.#refMap.keys()).reverse();
+  }
+
+  // Getter for refMap in reversed order
+  get refMapReversed() {
+    const reversedEntries = Array.from(this.#refMap.entries()).reverse();
+    return new Map(reversedEntries);
+  }
+
+// =============================================================================
+// IO methods
 
   // Method to store entries in local storage as refidArray
   storeRefidArray() {
@@ -52,12 +93,18 @@ class MapStor {
     localStorage.setItem('refEntries', refEntries);
   }
 
+// =============================================================================
+// MAP methods
+
   // Method to add an entry
   addEntry(key, value) {
     if (this.#refMap.has(key)) {
+      const existingValue = this.#refMap.get(key);
       this.#refMap.delete(key);
-    }
-    this.#refMap.set(key, value);
+      this.#refMap.set(key, existingValue);
+    } else {
+      this.#refMap.set(key, value);
+      }
     this.storeRefEntries();
   }
 
@@ -89,7 +136,7 @@ localStorage.setItem('refidArray', JSON.stringify([
 
 // Create an instance of MapStor, which will initialize based on the conditions provided
 const mapStor = new MapStor();
-console.log(mapStor.refMap); // Log the refMap
+console.log("Logged refMap " +mapStor.refMap); // Log the refMap
 
 // Store the refMap to local storage as refEntries
 mapStor.storeRefEntries();
@@ -100,6 +147,7 @@ console.log(JSON.parse(storedEntries));
 
 // Add a new entry
 mapStor.addEntry('john3:16', { timestamp: '2025-01-25T16:58:00Z', category: 'biblical' });
+mapStor.addEntry('gen1:1', { timestamp: '2025-01-25T16:58:00Z', category: 'biblical' });
 console.log(mapStor.refMap); // Log the refMap
 
 /*
