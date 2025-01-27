@@ -13,4 +13,7 @@ format:
 
 > Based on class mapStorage only, in console.
 
-<script src="map_storage.js"></script>
+::: {#mainAnchor}
+:::
+
+<script src="map_ui.js"></script>
