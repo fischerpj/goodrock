@@ -1,5 +1,5 @@
 // 2502 keep unique in reverse order
-// 0.0.15 help button + display
+// 0.0.15 help button + displayHtml
 // 0.0.14 refOnlyKeys + ?version
 // 0.0.13 getUniqueKeys 
 // 0.0.12 no mymini.add 
@@ -15,7 +15,7 @@ class MapUI {
 
     this.createMainDiv();
     this.addInputAndButtons();
-//    this.addEventListeners();
+    this.addEventListeners();
     
     this.urlbase = 'https://jsfapi.netlify.app/.netlify/functions/bgw';
     this.storageArray = stor;
@@ -108,12 +108,55 @@ class MapUI {
     this.inputDiv.appendChild(this.rowDiv);
     this.inputDiv.appendChild(this.buttonDiv);
   }
-
+  
+  // ===========================================================================
+  // EVENT Handling logic
+  
+    addEventListeners() {
+//    this.viewButton.addEventListener('click', () => this.viewInput());
+//    this.randomButton.addEventListener('click', () => this.viewRandom());
+//    this.allButton.addEventListener('click', () => this.viewAll());
+//    this.refButton.addEventListener('click', () => this.refOnly());
+//    this.refButton.addEventListener('click', () => this.refOnlyKeys());
+//    this.deleteButton.addEventListener('click', () => this.removeLastRef());
+    this.helpButton.addEventListener('click', () => this.helpme());
+  }
+  
+    async helpme() {
+  //  
+    const ul = document.getElementById('resultList');
+      ul.innerHTML = null;
+    const liElements = [];
+    const li = document.createElement('li');
+//      li.textContent = this.storageArray.version; // Initial placeholder text
+      li.textContent = `HeellooWaouw`;
+      ul.appendChild(li);
+  }
+  
+  // HTML coding of refMap
+  htmlMap() {
+  //      const ul = document.createElement('ul');
+        const ul = document.getElementById('resultList');
+  
+  /*      
+        this.#refMap.forEach((entry, refid) => {
+            const li = document.createElement('li');
+            li.textContent = `Refid: ${entry.refid}, Timestamp: ${entry.timestamp}, Category: ${entry.category}`;
+            ul.appendChild(li);
+        });
+  */
+        const li = document.createElement('li');
+        li.textContent = `Heelloo`;
+        ul.appendChild(li);
+//        return ul;
+    }
+    
 }
 
 // Usage example:
 document.addEventListener('DOMContentLoaded', () => {
   const muiInstance = new MapUI();
+//  muiInstance.htmlMap();
   console.log(muiInstance);
 });
 
