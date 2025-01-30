@@ -16,4 +16,4 @@ format:
 ::: {#mainAnchor}
 :::
 
-<script src="map_ui.js"></script>
+<script src="map_storage.js"></script>
