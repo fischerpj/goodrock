@@ -1,3 +1,4 @@
+// 1.0.7 Xurl
 // 1.0.6 mapHTML
 // 1.0.5 refSource
 // 1.0.3 refEntries item
@@ -19,28 +20,34 @@ class MapStor {
   #refMap;
   #refSource;
   #refUl;
+  #Xurlbase;
   
   constructor() {
     const refEntries = localStorage.getItem('refEntries');
     const refidArray = localStorage.getItem('refidArray');
     
+    this.#Xurlbase = 'https://jsfapi.netlify.app/.netlify/functions/bgw';
+//    const url = `${this.#Xurlbase}?param=${ref}`;
+
     // =========================================================================
     // LOAD from localStorage
-    
+    /*
     if (refEntries) {
       const entriesArray = JSON.parse(refEntries);
       this.#refSource = 'refEntries';
       this.#refMap = new Map(entriesArray);
-    } else if (refidArray) {
+    } else
+    */
+    if (refidArray) {
       const entriesArray = JSON.parse(refidArray);
       this.#refSource = 'refidArray';
-      const refMap = new Map(entriesArray.map(item => [item.refid, {ts: item.ts, category: 'biblical'}]));
+      const refMap = new Map(entriesArray.map(item => [item.refid, {Xurl: `${this.#Xurlbase}?param=${item.refid}`, ts: item.ts, category: 'biblical'}]));
       this.#refMap = refMap;
       this.storeRefEntries();
     } else {
       // Fallback initialization if refidArray doesn't exist
       this.#refSource = 'refDefault';
-      this.#refMap = new Map([['gen1:1', { timestamp: '2025-01-20T09:28:00Z', category: 'biblical' }]]);
+      this.#refMap = new Map([['gen1:1', { Xurl: `${this.#Xurlbase}?param=${item.refid}`, ts: '2025-01-20T09:28:00Z', category: 'biblical' }]]);
       this.storeRefEntries();
     }
     // Store refEntries corresponding to refMap happens not for refEntries
@@ -145,20 +152,53 @@ class MapStor {
     this.storeRefEntries();
   }
   
-  mapHTML(map = this.refMapReversed){
+  async mapHTML(){
+    const anchor = document.getElementById('mainAnchor');
+
+    const result = await this.fetchResults();
+    
     const ul = document.createElement('ul');
     // Clear the existing UL content
       ul.innerHTML = '';
     const liElements = [];
     // Append all the updated LI elements to the UL in one step
-      map.forEach((value, key) => {
+      result.forEach((value, key) => {
+        const valobject = JSON.parse(value);
         const li = document.createElement('li');
 //          li.textContent = ref[0] + JSON.stringify(ref[1]);
-          li.textContent = key + JSON.stringify(value);
+//          li.textContent = key + JSON.stringify(value);
+          li.textContent = key + " " +valobject.content;
           ul.appendChild(li)
         });
     this.#refUl = ul;  
+    
+    anchor.appendChild(ul);
   }
+  
+  // =============================================================================
+  // Xmethods
+  
+  async fetchResults() {
+    const resultMap = new Map();
+    
+    const fetchPromises =  Array.from(this.refMap).map(async ([key, value]) => {
+      try {
+            const response = await fetch(value.Xurl);
+            if (response.ok) {
+                const data = await response.text();
+                resultMap.set(key, data);
+            } else {
+                resultMap.set(key, `Error: ${response.statusText}`);
+            }
+        } catch (error) {
+            resultMap.set(key, `Error: ${error.message}`);
+        }
+      });
+      
+      await Promise.all(fetchPromises);
+      return resultMap;
+//      return([key, value.Xurl, value.ts])
+      }
 }
 
 // Example usage
@@ -184,11 +224,15 @@ console.log(mapStor.refSource); // Log the refSource
 
 // Verify the stored result
 //const storedEntries = localStorage.getItem('refEntries');
+console.log(mapStor.refMap);
 //console.log(mapStor.refEntries);
 //console.log(mapStor.refKeys);
-console.log(mapStor.lastEntry);
+//console.log(mapStor.lastEntry);
 mapStor.mapHTML();
-console.log(mapStor.refUl);
+//console.log(mapStor.refUl);
+//mapStor.fetchResults().then(res => console.log(res.entries()));
+mapStor.fetchResults().then(res => console.log(res));
+//mapStor.fetchResults().then(res => console.log(res));
 
 // Add a new entry
 //mapStor.addEntry('john3:16', { timestamp: '2025-01-25T16:58:00Z', category: 'biblical' });
