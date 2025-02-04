@@ -1,3 +1,4 @@
+// 1.0.8 XfetchDataInParallel
 // 1.0.7 Xurl
 // 1.0.6 mapHTML
 // 1.0.5 refSource
@@ -21,6 +22,7 @@ class MapStor {
   #refSource;
   #refUl;
   #Xurlbase;
+  #refMapPayload;
   
   constructor() {
     const refEntries = localStorage.getItem('refEntries');
@@ -28,16 +30,18 @@ class MapStor {
     
     this.#Xurlbase = 'https://jsfapi.netlify.app/.netlify/functions/bgw';
 //    const url = `${this.#Xurlbase}?param=${ref}`;
+    this.#refMapPayload = [];
 
     // =========================================================================
     // LOAD from localStorage
-    /*
+ 
+ /* 
     if (refEntries) {
       const entriesArray = JSON.parse(refEntries);
       this.#refSource = 'refEntries';
       this.#refMap = new Map(entriesArray);
-    } else
-    */
+    } else 
+*/    
     if (refidArray) {
       const entriesArray = JSON.parse(refidArray);
       this.#refSource = 'refidArray';
@@ -58,8 +62,8 @@ class MapStor {
     const ul = document.createElement('ul');
       ul.innerHTML = "empty"
       this.#refUl = ul;
-  
-  }
+
+  } // END of constructor
 
 // =============================================================================
 // GETTER methods
@@ -69,7 +73,12 @@ class MapStor {
     return this.#refMap;
   }
   
-   // Getter for source
+  // Getter for refMapPayload
+  get refMapPayload() {
+    return   this.#refMapPayload;
+  }
+  
+  // Getter for source
   get refSource() {
     return this.#refSource;
   }
@@ -152,10 +161,10 @@ class MapStor {
     this.storeRefEntries();
   }
   
-  async mapHTML(){
+  mapHTML(){
     const anchor = document.getElementById('mainAnchor');
 
-    const result = await this.fetchResults();
+    const result = this.refMapPayload;
     
     const ul = document.createElement('ul');
     // Clear the existing UL content
@@ -163,11 +172,12 @@ class MapStor {
     const liElements = [];
     // Append all the updated LI elements to the UL in one step
       result.forEach((value, key) => {
-        const valobject = JSON.parse(value);
-        const li = document.createElement('li');
+      let content_result = value.content.replace(/^\d+/, '');
+
+      const li = document.createElement('li');
 //          li.textContent = ref[0] + JSON.stringify(ref[1]);
 //          li.textContent = key + JSON.stringify(value);
-          li.textContent = key + " " +valobject.content;
+          li.textContent = key + " " +content_result;
           ul.appendChild(li)
         });
     this.#refUl = ul;  
@@ -178,27 +188,25 @@ class MapStor {
   // =============================================================================
   // Xmethods
   
-  async fetchResults() {
-    const resultMap = new Map();
-    
-    const fetchPromises =  Array.from(this.refMap).map(async ([key, value]) => {
-      try {
-            const response = await fetch(value.Xurl);
-            if (response.ok) {
-                const data = await response.text();
-                resultMap.set(key, data);
-            } else {
-                resultMap.set(key, `Error: ${response.statusText}`);
-            }
-        } catch (error) {
-            resultMap.set(key, `Error: ${error.message}`);
-        }
-      });
-      
-      await Promise.all(fetchPromises);
-      return resultMap;
-//      return([key, value.Xurl, value.ts])
-      }
+  // Function to fetch data from all URLs in parallel
+ async XfetchDataInParallel() {
+  try {
+    // Create an array of fetch promises
+    const fetchPromises = Array.from(this.#refMap.entries()).map(([key, value]) => 
+      fetch(value.Xurl)
+        .then(response => response.json())
+        .then(data => ([ key, {...data, ...value} ]))
+    );
+
+    // Wait for all fetch promises to resolve
+    const results  = await Promise.all(fetchPromises);
+    this.#refMapPayload = new Map(results);
+
+  } catch (error) {
+      console.error('Error fetching data:', error);
+  }
+};
+
 }
 
 // Example usage
@@ -218,20 +226,13 @@ localStorage.setItem('refidArray', JSON.stringify([
 ]));
 */
 
-// Create an instance of MapStor, which will initialize based on the conditions provided
-const mapStor = new MapStor();
-console.log(mapStor.refSource); // Log the refSource
-
 // Verify the stored result
 //const storedEntries = localStorage.getItem('refEntries');
-console.log(mapStor.refMap);
-//console.log(mapStor.refEntries);
 //console.log(mapStor.refKeys);
 //console.log(mapStor.lastEntry);
-mapStor.mapHTML();
+//mapStor.mapHTML();
 //console.log(mapStor.refUl);
 //mapStor.fetchResults().then(res => console.log(res.entries()));
-mapStor.fetchResults().then(res => console.log(res));
 //mapStor.fetchResults().then(res => console.log(res));
 
 // Add a new entry
@@ -244,3 +245,22 @@ mapStor.fetchResults().then(res => console.log(res));
 mapStor.removeLast();
 console.log(mapStor.refMap); // Log the refMap
 */
+
+// Usage example:
+document.addEventListener('DOMContentLoaded', () => {
+  // Create an instance of MapStor, which will initialize based on the conditions provided
+  const mapStor = new MapStor();
+  console.log(mapStor); // Log the refSource
+  console.log(mapStor.refEntries);
+//  console.log(mapStor.refSource); // Log the refSource
+//  console.log(mapStor.refMap);
+//  mapStor.XfetchResults().then(() => {
+//    console.log("done" +mapStor.refMapPayload);
+//  });
+  mapStor.XfetchDataInParallel()
+  .then(() => {
+    console.log(mapStor.refMapPayload);
+    mapStor.mapHTML();
+  });
+});
+
