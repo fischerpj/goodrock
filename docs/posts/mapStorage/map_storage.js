@@ -250,8 +250,8 @@ console.log(mapStor.refMap); // Log the refMap
 document.addEventListener('DOMContentLoaded', () => {
   // Create an instance of MapStor, which will initialize based on the conditions provided
   const mapStor = new MapStor();
-  console.log(mapStor); // Log the refSource
-  console.log(mapStor.refEntries);
+//  console.log(mapStor); // Log the refSource
+//  console.log(mapStor.refEntries);
 //  console.log(mapStor.refSource); // Log the refSource
 //  console.log(mapStor.refMap);
 //  mapStor.XfetchResults().then(() => {
@@ -259,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
 //  });
   mapStor.XfetchDataInParallel()
   .then(() => {
-    console.log(mapStor.refMapPayload);
+//    console.log(mapStor.refMapPayload);
     mapStor.mapHTML();
   });
 });
