@@ -1,3 +1,4 @@
+// 1.1.0 refEntries
 // 1.0.8 XfetchDataInParallel
 // 1.0.7 Xurl
 // 1.0.6 mapHTML
@@ -19,10 +20,12 @@
 
 class MapStor {
   #refMap;
+  #refEntries;
   #refSource;
   #refUl;
   #Xurlbase;
   #refMapPayload;
+  #refEntryPayload;
   
   constructor() {
     const refEntries = localStorage.getItem('refEntries');
@@ -43,11 +46,14 @@ class MapStor {
     } else 
 */    
     if (refidArray) {
-      const entriesArray = JSON.parse(refidArray);
       this.#refSource = 'refidArray';
-      const refMap = new Map(entriesArray.map(item => [item.refid, {Xurl: `${this.#Xurlbase}?param=${item.refid}`, ts: item.ts, category: 'biblical'}]));
-      this.#refMap = refMap;
-      this.storeRefEntries();
+      const entriesArray = JSON.parse(refidArray);
+      this.#refEntries = entriesArray.map(item => [item.refid, {Xurl: `${this.#Xurlbase}?param=${item.refid}`, ts: item.ts, category: 'biblical'}]);
+//      this.#refEntries = entriesArray;
+//      const refMap = new Map(entriesArray.map(item => [item.refid, {Xurl: `${this.#Xurlbase}?param=${item.refid}`, ts: item.ts, category: 'biblical'}]));
+//      this.#refMap = refMap;
+//      console.log(this.#refEntries);
+//      this.storeRefEntries();
     } else {
       // Fallback initialization if refidArray doesn't exist
       this.#refSource = 'refDefault';
@@ -78,6 +84,11 @@ class MapStor {
     return   this.#refMapPayload;
   }
   
+    // Getter for refMapPayload
+  get refEntryPayload() {
+    return   this.#refEntryPayload;
+  }
+  
   // Getter for source
   get refSource() {
     return this.#refSource;
@@ -85,7 +96,8 @@ class MapStor {
   
   // Getter for refEntries ARRAY
   get refEntries() {
-    return Array.from(this.#refMap.entries());
+//    return Array.from(this.#refMap.entries());
+    return this.#refEntries;
   }
   
   // Getter for refKeys ARRAY
@@ -134,7 +146,8 @@ class MapStor {
 
   // Method to store entries in local storage as refEntries
   storeRefEntries() {
-    const refEntries = JSON.stringify(Array.from(this.#refMap.entries()));
+//    const refEntries = JSON.stringify(Array.from(this.#refMap.entries()));
+    const refEntries = JSON.stringify(this.#refEntries);
     localStorage.setItem('refEntries', refEntries);
   }
 
@@ -164,14 +177,15 @@ class MapStor {
   mapHTML(){
     const anchor = document.getElementById('mainAnchor');
 
-    const result = this.refMapPayload;
+//    const result = this.refMapPayload;
+    const result = this.refEntryPayload;
     
     const ul = document.createElement('ul');
     // Clear the existing UL content
       ul.innerHTML = '';
     const liElements = [];
     // Append all the updated LI elements to the UL in one step
-      result.forEach((value, key) => {
+      result.forEach(([key,value]) => {
       let content_result = value.content.replace(/^\d+/, '');
 
       const li = document.createElement('li');
@@ -187,6 +201,25 @@ class MapStor {
   
   // =============================================================================
   // Xmethods
+  
+    // Function to fetch data from all URLs in parallel
+ async XfetchEntriesInParallel() {
+  try {
+    // Create an array of fetch promises
+    const fetchPromises = this.#refEntries.map(([key, value]) => 
+      fetch(value.Xurl)
+        .then(response => response.json())
+        .then(data => ([ key, {...data, ...value} ]))
+    );
+
+    // Wait for all fetch promises to resolve
+    const results  = await Promise.all(fetchPromises);
+    this.#refEntryPayload = results;
+
+  } catch (error) {
+      console.error('Error fetching data:', error);
+  }
+};
   
   // Function to fetch data from all URLs in parallel
  async XfetchDataInParallel() {
@@ -251,15 +284,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // Create an instance of MapStor, which will initialize based on the conditions provided
   const mapStor = new MapStor();
 //  console.log(mapStor); // Log the refSource
-//  console.log(mapStor.refEntries);
-//  console.log(mapStor.refSource); // Log the refSource
+  console.log(mapStor.refSource); // Log the refSource
+  console.log(mapStor.refEntries);
 //  console.log(mapStor.refMap);
 //  mapStor.XfetchResults().then(() => {
 //    console.log("done" +mapStor.refMapPayload);
 //  });
-  mapStor.XfetchDataInParallel()
+//  mapStor.XfetchDataInParallel()
+  mapStor.XfetchEntriesInParallel()
   .then(() => {
-//    console.log(mapStor.refMapPayload);
+    console.log(mapStor.refEntryPayload);
     mapStor.mapHTML();
   });
 });
