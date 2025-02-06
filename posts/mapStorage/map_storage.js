@@ -1,3 +1,4 @@
+// 1.1.1 refPayload
 // 1.1.0 refEntries
 // 1.0.8 XfetchDataInParallel
 // 1.0.7 Xurl
@@ -109,10 +110,17 @@ class MapStor {
 // MAP methods
 
   // Method to add an entry
+  // add an element to Array
+    addElement(refid) {
+      const new_array = this.#refEntries;
+//      const item = this.timestamp_(refid);
+//      new_array.push(item);
+//      this.#cachedValue = new_array;
+//      this.write_storage();
+    }
 
   // Method to remove the last entry
 
-  
   mapHTML(){
     const result = this.refPayload;
     const anchor = document.getElementById('mainAnchor');
