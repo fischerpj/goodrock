@@ -105,7 +105,13 @@ class MapStor {
   storeRefEntries() {
     localStorage.setItem('refEntries', JSON.stringify(this.#refEntries));
   }
-
+  
+  asEntry(refid) {
+    const entry = [];
+//      this.#refEntries = JSON.parse(refidArray).map(item => [item.refid, {Xurl: `${this.#Xurlbase}?param=${item.refid}`, ts: item.ts, category: 'biblical'}]);
+    entry;
+  }
+  
 // =============================================================================
 // MAP methods
 
@@ -172,6 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   mapStor.XfetchParallel()
   .then(() => {
+    console.log(mapStor.refEntries);
     console.log(mapStor.refPayload);
     console.log(mapStor.lastEntry);
     console.log(mapStor.randomEntry);
