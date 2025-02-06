@@ -19,22 +19,18 @@
 */
 
 class MapStor {
-  #refMap;
-  #refEntries;
   #refSource;
+  #refEntries;
+  #refPayload;
   #refUl;
   #Xurlbase;
-  #refMapPayload;
-  #refEntryPayload;
   
   constructor() {
     const refEntries = localStorage.getItem('refEntries');
     const refidArray = localStorage.getItem('refidArray');
     
     this.#Xurlbase = 'https://jsfapi.netlify.app/.netlify/functions/bgw';
-//    const url = `${this.#Xurlbase}?param=${ref}`;
-    this.#refMapPayload = [];
-
+    
     // =========================================================================
     // LOAD from localStorage
  
@@ -47,17 +43,12 @@ class MapStor {
 */    
     if (refidArray) {
       this.#refSource = 'refidArray';
-      const entriesArray = JSON.parse(refidArray);
-      this.#refEntries = entriesArray.map(item => [item.refid, {Xurl: `${this.#Xurlbase}?param=${item.refid}`, ts: item.ts, category: 'biblical'}]);
-//      this.#refEntries = entriesArray;
-//      const refMap = new Map(entriesArray.map(item => [item.refid, {Xurl: `${this.#Xurlbase}?param=${item.refid}`, ts: item.ts, category: 'biblical'}]));
-//      this.#refMap = refMap;
-//      console.log(this.#refEntries);
-//      this.storeRefEntries();
+      this.#refEntries = JSON.parse(refidArray).map(item => [item.refid, {Xurl: `${this.#Xurlbase}?param=${item.refid}`, ts: item.ts, category: 'biblical'}]);
+      this.storeRefEntries();
     } else {
       // Fallback initialization if refidArray doesn't exist
       this.#refSource = 'refDefault';
-      this.#refMap = new Map([['gen1:1', { Xurl: `${this.#Xurlbase}?param=${item.refid}`, ts: '2025-01-20T09:28:00Z', category: 'biblical' }]]);
+      this.#refEntries = new Array([['gen1:1', { Xurl: `${this.#Xurlbase}?param=${item.refid}`, ts: '2025-01-20T09:28:00Z', category: 'biblical' }]]);
       this.storeRefEntries();
     }
     // Store refEntries corresponding to refMap happens not for refEntries
@@ -74,62 +65,33 @@ class MapStor {
 // =============================================================================
 // GETTER methods
 
-  // Getter for refMap
-  get refMap() {
-    return this.#refMap;
-  }
-  
-  // Getter for refMapPayload
-  get refMapPayload() {
-    return   this.#refMapPayload;
-  }
-  
-    // Getter for refMapPayload
-  get refEntryPayload() {
-    return   this.#refEntryPayload;
-  }
-  
   // Getter for source
   get refSource() {
     return this.#refSource;
   }
   
-  // Getter for refEntries ARRAY
+  // Getter for refEntries ARRAY in full
   get refEntries() {
-//    return Array.from(this.#refMap.entries());
     return this.#refEntries;
   }
   
-  // Getter for refKeys ARRAY
-  get refKeys() {
-    return Array.from(this.#refMap.keys());
+  // Getter for refPayload
+  get refPayload() {
+    return   this.#refPayload;
   }
   
-  // Getter for refMap's lastEntry as MAP
+  // Getter for lastEntry 
   get lastEntry() {
-    const keys = Array.from(this.#refMap.keys());
-    const lastKey = keys[keys.length - 1];
-    return new Map([[lastKey, this.#refMap.get(lastKey)]]);
+    return this.#refPayload.slice(-1);
   }
 
   // Getter for a in refMap's random entry as MAP
   get randomEntry() {
-    const keys = Array.from(this.#refMap.keys());
-    const randomKey = keys[Math.floor(Math.random() * keys.length)];
-    return new Map([[randomKey, this.#refMap.get(randomKey)]]);
+    const myload = this.#refPayload;
+    const randomIndex = Math.floor(Math.random() * myload.length);
+    return myload.slice(randomIndex, randomIndex + 1);
   }
   
-  // Getter for refKeys reversed ARRAY
-  get refKeysReversed() {
-    return Array.from(this.#refMap.keys()).reverse();
-  }
-
-  // Getter for refMap in reversed order a MAP
-  get refMapReversed() {
-    const reversedEntries = Array.from(this.#refMap.entries()).reverse();
-    return new Map(reversedEntries);
-  }
-
   // Getter for a UL tag
   get refUl() {
     return this.#refUl;
@@ -138,73 +100,44 @@ class MapStor {
 // =============================================================================
 // IO methods
 
-  // Method to store entries in local storage as refidArray
-  storeRefidArray() {
-    const refidArray = JSON.stringify(Array.from(this.#refMap.entries()).map(([key, value]) => ({ ref: key, timestamp: value.timestamp, category: value.category })));
-    localStorage.setItem('refidArray', refidArray);
-  }
-
   // Method to store entries in local storage as refEntries
   storeRefEntries() {
-//    const refEntries = JSON.stringify(Array.from(this.#refMap.entries()));
-    const refEntries = JSON.stringify(this.#refEntries);
-    localStorage.setItem('refEntries', refEntries);
+    localStorage.setItem('refEntries', JSON.stringify(this.#refEntries));
   }
 
 // =============================================================================
 // MAP methods
 
   // Method to add an entry
-  addEntry(key, value) {
-    if (this.#refMap.has(key)) {
-      const existingValue = this.#refMap.get(key);
-      this.#refMap.delete(key);
-      this.#refMap.set(key, existingValue);
-    } else {
-      this.#refMap.set(key, value);
-      }
-    this.storeRefEntries();
-  }
 
   // Method to remove the last entry
-  removeLast() {
-    const keys = Array.from(this.#refMap.keys());
-    const lastKey = keys[keys.length - 1];
-    this.#refMap.delete(lastKey);
-    this.storeRefEntries();
-  }
+
   
   mapHTML(){
+    const result = this.refPayload;
     const anchor = document.getElementById('mainAnchor');
-
-//    const result = this.refMapPayload;
-    const result = this.refEntryPayload;
-    
     const ul = document.createElement('ul');
     // Clear the existing UL content
       ul.innerHTML = '';
     const liElements = [];
+    
     // Append all the updated LI elements to the UL in one step
       result.forEach(([key,value]) => {
-      let content_result = value.content.replace(/^\d+/, '');
-
-      const li = document.createElement('li');
-//          li.textContent = ref[0] + JSON.stringify(ref[1]);
-//          li.textContent = key + JSON.stringify(value);
+        let content_result = value.content.replace(/^\d+/, '');
+        const li = document.createElement('li');
           li.textContent = key + " " +content_result;
           ul.appendChild(li)
         });
     this.#refUl = ul;  
-    
     anchor.appendChild(ul);
   }
   
   // =============================================================================
   // Xmethods
   
-    // Function to fetch data from all URLs in parallel
- async XfetchEntriesInParallel() {
-  try {
+  // Function to fetch data from all URLs in parallel
+  async XfetchParallel() {
+   try {
     // Create an array of fetch promises
     const fetchPromises = this.#refEntries.map(([key, value]) => 
       fetch(value.Xurl)
@@ -214,87 +147,27 @@ class MapStor {
 
     // Wait for all fetch promises to resolve
     const results  = await Promise.all(fetchPromises);
-    this.#refEntryPayload = results;
+    this.#refPayload = results;
 
-  } catch (error) {
+    } catch (error) {
       console.error('Error fetching data:', error);
-  }
-};
+    }
+  };
   
-  // Function to fetch data from all URLs in parallel
- async XfetchDataInParallel() {
-  try {
-    // Create an array of fetch promises
-    const fetchPromises = Array.from(this.#refMap.entries()).map(([key, value]) => 
-      fetch(value.Xurl)
-        .then(response => response.json())
-        .then(data => ([ key, {...data, ...value} ]))
-    );
-
-    // Wait for all fetch promises to resolve
-    const results  = await Promise.all(fetchPromises);
-    this.#refMapPayload = new Map(results);
-
-  } catch (error) {
-      console.error('Error fetching data:', error);
-  }
-};
-
 }
-
-// Example usage
-/*
-const exampleMap = new Map([
-  ['gen1:1', { timestamp: '2025-01-20T09:28:00Z', category: 'biblical' }],
-  ['rom1:17', { timestamp: '2025-01-19T10:45:00Z', category: 'biblical' }],
-  ['gal2:21', { timestamp: '2025-01-18T11:15:00Z', category: 'biblical' }],
-  ['matt6:33', { timestamp: '2025-01-21T08:00:00Z', category: 'biblical' }]
-]);
-
-localStorage.setItem('refidArray', JSON.stringify([
-  { ref: 'gen1:1', timestamp: '2025-01-20T09:28:00Z', category: 'biblical' },
-  { ref: 'rom1:17', timestamp: '2025-01-19T10:45:00Z', category: 'biblical' },
-  { ref: 'gal2:21', timestamp: '2025-01-18T11:15:00Z', category: 'biblical' },
-  { ref: 'matt6:33', timestamp: '2025-01-21T08:00:00Z', category: 'biblical' }
-]));
-*/
-
-// Verify the stored result
-//const storedEntries = localStorage.getItem('refEntries');
-//console.log(mapStor.refKeys);
-//console.log(mapStor.lastEntry);
-//mapStor.mapHTML();
-//console.log(mapStor.refUl);
-//mapStor.fetchResults().then(res => console.log(res.entries()));
-//mapStor.fetchResults().then(res => console.log(res));
-
-// Add a new entry
-//mapStor.addEntry('john3:16', { timestamp: '2025-01-25T16:58:00Z', category: 'biblical' });
-//mapStor.addEntry('gen1:1', { timestamp: '2025-01-25T16:58:00Z', category: 'biblical' });
-//console.log(mapStor.refMap); // Log the refMap
-
-/*
-// Remove the last entry
-mapStor.removeLast();
-console.log(mapStor.refMap); // Log the refMap
-*/
 
 // Usage example:
 document.addEventListener('DOMContentLoaded', () => {
   // Create an instance of MapStor, which will initialize based on the conditions provided
   const mapStor = new MapStor();
-//  console.log(mapStor); // Log the refSource
   console.log(mapStor.refSource); // Log the refSource
-  console.log(mapStor.refEntries);
-//  console.log(mapStor.refMap);
-//  mapStor.XfetchResults().then(() => {
-//    console.log("done" +mapStor.refMapPayload);
-//  });
-//  mapStor.XfetchDataInParallel()
-  mapStor.XfetchEntriesInParallel()
+
+  mapStor.XfetchParallel()
   .then(() => {
-    console.log(mapStor.refEntryPayload);
+    console.log(mapStor.refPayload);
+    console.log(mapStor.lastEntry);
+    console.log(mapStor.randomEntry);
     mapStor.mapHTML();
   });
+  
 });
-
