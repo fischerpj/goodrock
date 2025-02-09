@@ -3,7 +3,7 @@ title: "About"
 listing:
   contents: posts
   sort: date-desc
-image: profile.jpg
+image: K2_1739132202343.jpg
 about:
   template: jolla
   links:
