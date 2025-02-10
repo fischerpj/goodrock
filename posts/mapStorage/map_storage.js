@@ -296,9 +296,9 @@ class MapStor {
 document.addEventListener('DOMContentLoaded', () => {
 // USE CASE create and async payload for ONE REF
   const bibref = new  Ref('ps10:5');
-  console.log(bibref.asEntry);
-  bibref.fetch().then(() => {console.log(bibref.payload)});
-  bibref.XfetchSingle().then(() => {console.log(bibref.singlePayload)});
+ // console.log(bibref.asEntry);
+//  bibref.fetch().then(() => {console.log(bibref.payload)});
+//  bibref.XfetchSingle().then(() => {console.log(bibref.singlePayload)});
 
 // USE CASE MAPSTOR
   // Create an instance of MapStor, which will initialize based on the conditions provided
@@ -310,7 +310,15 @@ document.addEventListener('DOMContentLoaded', () => {
 //    .then(() => {console.log(mapStor.singleRef.payload)}); // Log the refSource
 //  console.log(mapStor.refSource); // Log the refSource
 //  mapStor.addEntry('ps118:1'); // 
-//  mapStor.addEntry('rev1:2').then(console.log(mapStor.singleRef));  
+//  mapStor.addEntry('rev1:2').then(console.log(mapStor.singleRef)); 
+
+//    console.log(mapStor.singleRef);
+
+  mapStor.singleRef.XfetchSingle()
+  .then(() => {
+    console.log(mapStor.singleRef.singlePayload);
+    mapStor.mapHTML(mapStor.singleRef.singlePayload);
+  });
 
   mapStor.XfetchParallel()
   .then(() => {
