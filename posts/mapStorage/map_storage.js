@@ -267,29 +267,7 @@ class MapStor {
   }
   
   // =============================================================================
-  // Xmethods
 
-/*  
-  // Function to fetch data from all URLs in parallel
-  async XfetchParallel() {
-   const entries = this.#refEntries;  
-   try {
-    // Create an array of fetch promises
-    const fetchPromises = entries.map(([key, value]) => 
-      fetch(value.Xurl)
-        .then(response => response.json())
-        .then(data => ([ key, {...data, ...value} ]))
-    );
-
-    // Wait for all fetch promises to resolve
-    const results  = await Promise.all(fetchPromises);
-    this.#refPayload = new Map(results);
-
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-*/  
 }
 
 // Usage example:
