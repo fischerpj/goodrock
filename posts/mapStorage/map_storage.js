@@ -23,18 +23,24 @@
 
 class Ref {
   #Xurlbase;
-  #meta;
   #asEntry;
-  #payload;
-  #singlePayload;
-  
-  constructor(refid = "gen1:1") {
+  #asPayload;
+
+  constructor(arg = "gen1:1") {
     this.#Xurlbase = 'https://jsfapi.netlify.app/.netlify/functions/bgw';
-    this.#meta = {refid: refid,
-                  Xurl: `${this.#Xurlbase}?param=${refid}`, 
-                  ts: new Date().toISOString(),
-                  category: 'biblical' };
-    this.#asEntry = [[refid, this.#meta]];                
+    
+    if (typeof arg === 'string') {
+      const meta = {
+        refid: arg,
+        Xurl: `${this.#Xurlbase}?param=${arg}`, 
+        ts: new Date().toISOString(),
+        category: 'biblical' };
+      this.#asEntry = [[arg, meta]];   
+      } else if (Array.isArray(arg)) {
+            this.#asEntry = arg;
+      } else {
+            throw new Error('Invalid argument type');
+      }
    }
    
   // Getter REVERSE array of keys
@@ -42,23 +48,13 @@ class Ref {
     return this.#asEntry
   }
   
-   // Getter REVERSE array of keys
-  get meta() {
-    return this.#meta;
-  }
-  
   // Getter REVERSE array of keys
-  get payload() {
-    return this.#payload;
+  get asPayload() {
+    return this.#asPayload;
   }
   
-   // Getter REVERSE array of keys
-  get singlePayload() {
-    return this.#singlePayload;
-  }
-  
-    // Function to fetch data from all URLs in parallel
-  async XfetchSingle() {
+  // Function to fetch data from all URLs in parallel
+  async fetchParallel() {
    const entries = this.#asEntry;  
    try {
     // Create an array of fetch promises
@@ -70,13 +66,14 @@ class Ref {
 
     // Wait for all fetch promises to resolve
     const results  = await Promise.all(fetchPromises);
-    this.#singlePayload = results;
+    this.#asPayload = results;
 
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
   
+  /*
   // Function to fetch data from all URLs in parallel
   async fetch() {
     const entries = this.#asEntry;  
@@ -95,6 +92,7 @@ class Ref {
       console.error('Error fetching data:', error);
     }
   }
+  */
 }
 
 class MapStor {
@@ -103,18 +101,17 @@ class MapStor {
   #refPayload;
   #refUl;
   #Xurlbase;
-  singleRef;
-  
+  refs;
+
   constructor() {
     const refEntries = localStorage.getItem('refEntries');
     const refidArray = localStorage.getItem('refidArray');
-    this.singleRef = new Ref("gen1:1"); 
-    
     this.#Xurlbase = 'https://jsfapi.netlify.app/.netlify/functions/bgw';
-    
+//    this.refs = new Ref("gen1:1"); 
+
     // =========================================================================
     // LOAD from localStorage
- 
+
  /* 
     if (refEntries) {
       const entriesArray = JSON.parse(refEntries);
@@ -132,6 +129,9 @@ class MapStor {
       this.#refEntries = new Array([['gen1:1', { Xurl: `${this.#Xurlbase}?param=${item.refid}`, ts: '2025-01-20T09:28:00Z', category: 'biblical' }]]);
       this.storeRefEntries();
     }
+    
+    this.refs = new Ref(this.#refEntries); 
+
     // Store refEntries corresponding to refMap happens not for refEntries
     
     // =========================================================================
@@ -208,7 +208,7 @@ class MapStor {
 
   // Method to remove the last entry
   async addEntry(key= 'Rev1:1'){
-    this.singleRef = new Ref(key);
+    this.refs = new Ref(key);
     const map = this.#refPayload;
 /*    
     const lowerCaseKey = key.toLowerCase();
@@ -221,7 +221,7 @@ class MapStor {
       }
       this.#refPayload = map;
 */    
-    return this.singleRef.fetch();
+    return this.refs.fetch();
     }
   
     // Function to add an element with logic for existing keys
@@ -244,7 +244,7 @@ class MapStor {
     this.#refPayload.delete(lastKey);
   }
 
-  mapHTML(refMap = this.asEntries){
+  mapHTML(refMap = this.refs.asPayload){
     const result = refMap;
     const anchor = document.getElementById('mainAnchor');
     const ul = document.createElement('ul');
@@ -268,7 +268,8 @@ class MapStor {
   
   // =============================================================================
   // Xmethods
-  
+
+/*  
   // Function to fetch data from all URLs in parallel
   async XfetchParallel() {
    const entries = this.#refEntries;  
@@ -288,7 +289,7 @@ class MapStor {
       console.error('Error fetching data:', error);
     }
   };
-  
+*/  
 }
 
 // Usage example:
@@ -296,41 +297,15 @@ class MapStor {
 document.addEventListener('DOMContentLoaded', () => {
 // USE CASE create and async payload for ONE REF
   const bibref = new  Ref('ps10:5');
- // console.log(bibref.asEntry);
-//  bibref.fetch().then(() => {console.log(bibref.payload)});
-//  bibref.XfetchSingle().then(() => {console.log(bibref.singlePayload)});
-
+ 
 // USE CASE MAPSTOR
   // Create an instance of MapStor, which will initialize based on the conditions provided
   const mapStor = new MapStor();
-//  mapStor.addEntry("ps116:1")
-//  .then(()=> console.log(mapStor.singleRef.payload));
-  
-//  mapStor.singleRef.fetch()
-//    .then(() => {console.log(mapStor.singleRef.payload)}); // Log the refSource
-//  console.log(mapStor.refSource); // Log the refSource
-//  mapStor.addEntry('ps118:1'); // 
-//  mapStor.addEntry('rev1:2').then(console.log(mapStor.singleRef)); 
 
-//    console.log(mapStor.singleRef);
-
-  mapStor.singleRef.XfetchSingle()
+  mapStor.refs.fetchParallel()
   .then(() => {
-    console.log(mapStor.singleRef.singlePayload);
-    mapStor.mapHTML(mapStor.singleRef.singlePayload);
+    console.log(mapStor.refs);
+    mapStor.mapHTML();
   });
 
-  mapStor.XfetchParallel()
-  .then(() => {
-//    const keys = [['refKeys',{content: JSON.stringify(mapStor.keysArray)}]];
-//    console.log(mapStor.refPayload);
-//    mapStor.removeLast();
-//    console.log(mapStor.keysArray);
-    console.log(mapStor.asEntries);
-//    console.log(mapStor.lastEntry);
-//    console.log(JSON.stringify(mapStor.randomEntry));
-    mapStor.mapHTML(this.asEntries);
-//    mapStor.mapHTML(keys);
-  });
-  
 });
