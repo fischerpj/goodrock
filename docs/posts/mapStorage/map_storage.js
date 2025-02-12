@@ -1,4 +1,4 @@
-// 1.1.3 Ref
+// 1.1.3 Refs
 // 1.1.2 lastEntry & removeLast
 // 1.1.1 refPayload
 // 1.1.0 refEntries
@@ -21,7 +21,7 @@
 ]
 */
 
-class Ref {
+class Refs {
   #Xurlbase;
   #asEntry;
   #asPayload;
@@ -50,10 +50,11 @@ class Ref {
   
   // Getter REVERSE array of keys
   get asPayload() {
-    return this.#asPayload;
+    return this.#asPayload.reverse();
   }
   
   // Function to fetch data from all URLs in parallel
+  // input is #asEntry output is #asPayload
   async fetchParallel() {
    const entries = this.#asEntry;  
    try {
@@ -67,32 +68,11 @@ class Ref {
     // Wait for all fetch promises to resolve
     const results  = await Promise.all(fetchPromises);
     this.#asPayload = results;
-
+    return results; // retrun a Promise to allow successful chaining
     } catch (error) {
       console.error('Error fetching data:', error);
     }
-  };
-  
-  /*
-  // Function to fetch data from all URLs in parallel
-  async fetch() {
-    const entries = this.#asEntry;  
-
-   try {
-    const obj = this.#meta;
-    // Create an array of fetch promises
-    const fetchPromises = fetch(obj.Xurl)
-        .then(response => response.json())
-        .then(data => ([obj.refid, {...data, ...obj}]))
-
-    // Wait for all fetch promises to resolve
-    const results = await fetchPromises;
-    this.#payload  = results;
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  }
-  */
+  }; // end of async method
 }
 
 class MapStor {
@@ -102,12 +82,13 @@ class MapStor {
   #refUl;
   #Xurlbase;
   refs;
+  addref;
 
   constructor() {
     const refEntries = localStorage.getItem('refEntries');
     const refidArray = localStorage.getItem('refidArray');
     this.#Xurlbase = 'https://jsfapi.netlify.app/.netlify/functions/bgw';
-//    this.refs = new Ref("gen1:1"); 
+//    this.refs = new Refs("gen1:1"); 
 
     // =========================================================================
     // LOAD from localStorage
@@ -130,7 +111,8 @@ class MapStor {
       this.storeRefEntries();
     }
     
-    this.refs = new Ref(this.#refEntries); 
+    this.refs = new Refs(this.#refEntries); 
+    this.addref = new Refs("Rev4:1");
 
     // Store refEntries corresponding to refMap happens not for refEntries
     
@@ -208,8 +190,9 @@ class MapStor {
 
   // Method to remove the last entry
   async addEntry(key= 'Rev1:1'){
-    this.refs = new Ref(key);
-    const map = this.#refPayload;
+    this.addref = new Refs(key);
+    const result = this.addref.fetchParallel();
+    return result
 /*    
     const lowerCaseKey = key.toLowerCase();
       if (map.has(lowerCaseKey)) {
@@ -221,7 +204,7 @@ class MapStor {
       }
       this.#refPayload = map;
 */    
-    return this.refs.fetch();
+//    return this.refs.fetch();
     }
   
     // Function to add an element with logic for existing keys
@@ -267,40 +250,60 @@ class MapStor {
   }
   
   // =============================================================================
-  // Xmethods
 
-/*  
-  // Function to fetch data from all URLs in parallel
-  async XfetchParallel() {
-   const entries = this.#refEntries;  
-   try {
-    // Create an array of fetch promises
-    const fetchPromises = entries.map(([key, value]) => 
-      fetch(value.Xurl)
-        .then(response => response.json())
-        .then(data => ([ key, {...data, ...value} ]))
-    );
-
-    // Wait for all fetch promises to resolve
-    const results  = await Promise.all(fetchPromises);
-    this.#refPayload = new Map(results);
-
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
-*/  
 }
 
 // Usage example:
 
 document.addEventListener('DOMContentLoaded', () => {
+/*  
 // USE CASE create and async payload for ONE REF
-  const bibref = new  Ref('ps10:5');
- 
+  const bibref = new  Refs('ps10:5');
+  bibref.fetchParallel()
+    .then(results => {
+        console.log(bibref);
+        console.log(results);
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
+*/
+
+
 // USE CASE MAPSTOR
   // Create an instance of MapStor, which will initialize based on the conditions provided
   const mapStor = new MapStor();
+/*  
+  // FETCH addref single
+  mapStor.addref.fetchParallel()
+    .then(results => {
+        console.log(results);
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
+
+  // FETCH refs multi
+  mapStor.refs.fetchParallel()
+    .then(results => {
+        console.log(results);
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
+*/
+
+  // SHOW all   
+//  console.log(mapStor);
+
+//  mapStor.addEntry('act4:2').then(()=> {console.log(mapStor)});
+
+// works on addref !
+mapStor.addEntry('act4:2')
+  .then(() => {
+    console.log(mapStor);
+//    mapStor.mapHTML(); 
+  });
 
   mapStor.refs.fetchParallel()
   .then(() => {
@@ -308,4 +311,5 @@ document.addEventListener('DOMContentLoaded', () => {
     mapStor.mapHTML();
   });
 
-});
+
+}); // end of listener code
