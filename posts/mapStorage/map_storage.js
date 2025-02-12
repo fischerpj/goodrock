@@ -266,6 +266,7 @@ class MapStor {
 document.addEventListener('DOMContentLoaded', () => {
   
 // USE CASE create and async payload for ONE REF
+/*
   const bibref = new  Refs('ps10:5');
   // transform this into an init method of Refs
   bibref.fetchParallel()
@@ -276,6 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(error => {
         console.error("Error:", error);
     });
+*/
 
 // USE CASE MAPSTOR
   // Create an instance of MapStor, which will initialize based on the conditions provided
@@ -284,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // FETCH addref single in mapStor
   mapStor.addref.fetchParallel()
     .then(results => {
-        console.log(mapStor);
+//        console.log(mapStor);
     })
     .catch(error => {
         console.error("Error:", error);
