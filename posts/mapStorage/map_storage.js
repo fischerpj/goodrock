@@ -24,7 +24,7 @@
 class Refs {
   #Xurlbase;
   #asEntry;
-  #asPayload;
+  #asPayload; 
 
   constructor(arg = "gen1:1") {
     this.#Xurlbase = 'https://jsfapi.netlify.app/.netlify/functions/bgw';
@@ -50,7 +50,7 @@ class Refs {
   
   // Getter REVERSE array of keys
   get asPayload() {
-    return this.#asPayload.reverse();
+    return this.#asPayload;
   }
   
   // Function to fetch data from all URLs in parallel
@@ -68,21 +68,29 @@ class Refs {
     // Wait for all fetch promises to resolve
     const results  = await Promise.all(fetchPromises);
     this.#asPayload = results;
-    return results; // retrun a Promise to allow successful chaining
+    return results; // return a Promise to allow successful chaining
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   }; // end of async method
+  
+  mergePayload(addref = this) {
+    const payload = this.#asPayload;
+    const second = addref.asPayload;
+    // each element of second is pushed onto payload
+    const merge = second.map((entry) => {payload.push(entry)});
+    this.#asPayload = payload;
+  }
 }
 
 class MapStor {
   #refSource;
   #refEntries;
-  #refPayload;
   #refUl;
   #Xurlbase;
   refs;
   addref;
+  #refPayload; // remove this data logic
 
   constructor() {
     const refEntries = localStorage.getItem('refEntries');
@@ -256,50 +264,51 @@ class MapStor {
 // Usage example:
 
 document.addEventListener('DOMContentLoaded', () => {
-/*  
+  
 // USE CASE create and async payload for ONE REF
   const bibref = new  Refs('ps10:5');
+  // transform this into an init method of Refs
   bibref.fetchParallel()
     .then(results => {
+        bibref.mergePayload();
         console.log(bibref);
-        console.log(results);
     })
     .catch(error => {
         console.error("Error:", error);
     });
-*/
-
 
 // USE CASE MAPSTOR
   // Create an instance of MapStor, which will initialize based on the conditions provided
   const mapStor = new MapStor();
-/*  
-  // FETCH addref single
+  
+  // FETCH addref single in mapStor
   mapStor.addref.fetchParallel()
     .then(results => {
-        console.log(results);
+        console.log(mapStor);
     })
     .catch(error => {
         console.error("Error:", error);
     });
 
-  // FETCH refs multi
+  // FETCH refs multi in mapStor
   mapStor.refs.fetchParallel()
     .then(results => {
-        console.log(results);
+        mapStor.refs.mergePayload(mapStor.addref);
+        mapStor.mapHTML();
+        console.log(mapStor.refs.asPayload);
     })
     .catch(error => {
         console.error("Error:", error);
     });
-*/
 
   // SHOW all   
 //  console.log(mapStor);
 
 //  mapStor.addEntry('act4:2').then(()=> {console.log(mapStor)});
 
+/*
 // works on addref !
-mapStor.addEntry('act4:2')
+  mapStor.addEntry('act4:2')
   .then(() => {
     console.log(mapStor);
 //    mapStor.mapHTML(); 
@@ -307,9 +316,9 @@ mapStor.addEntry('act4:2')
 
   mapStor.refs.fetchParallel()
   .then(() => {
-    console.log(mapStor.refs);
+    console.log(mapStor);
     mapStor.mapHTML();
   });
-
+*/
 
 }); // end of listener code
