@@ -39,7 +39,7 @@
     "href": "posts/mapStorage/index.html",
     "title": "mapStorage",
     "section": "",
-    "text": "Based on class mapStorage only, in console."
+    "text": "Now based on mstor.js and class Refs instead of mapStorage."
   },
   {
     "objectID": "posts/post-with-code/index.html",

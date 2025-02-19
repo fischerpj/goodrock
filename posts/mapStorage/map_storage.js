@@ -24,7 +24,7 @@
 class Refs {
   #Xurlbase;
   #asEntry;
-  #asPayload; 
+  asPayload; 
 
   constructor(arg = "gen1:1") {
     this.#Xurlbase = 'https://jsfapi.netlify.app/.netlify/functions/bgw';
@@ -48,13 +48,13 @@ class Refs {
     return this.#asEntry
   }
   
-  // Getter REVERSE array of keys
-  get asPayload() {
-    return this.#asPayload;
+    // Setter  array of keys
+  set setPayload(value) {
+    this.asPayload = value;
   }
   
   // Function to fetch data from all URLs in parallel
-  // input is #asEntry output is #asPayload
+  // input is #asEntry output is asPayload
   async fetchParallel() {
    const entries = this.#asEntry;  
    try {
@@ -67,20 +67,14 @@ class Refs {
 
     // Wait for all fetch promises to resolve
     const results  = await Promise.all(fetchPromises);
-    this.#asPayload = results;
-    return results; // return a Promise to allow successful chaining
+    this.asPayload = results;
+    return this; // return a Promise to allow successful chaining
     } catch (error) {
       console.error('Error fetching data:', error);
+      return null;
     }
   }; // end of async method
   
-  mergePayload(addref = this) {
-    const payload = this.#asPayload;
-    const second = addref.asPayload;
-    // each element of second is pushed onto payload
-    const merge = second.map((entry) => {payload.push(entry)});
-    this.#asPayload = payload;
-  }
 }
 
 class MapStor {
@@ -176,6 +170,28 @@ class MapStor {
 // =============================================================================
 // IO methods
 
+  // =========================================================================
+  // PAYLOAD from WEB
+
+  async mergePayload_() {
+    const payload = await this.refs.asPayload;
+    const second = await this.addref.asPayload;
+    console.log(second);    // each element of second is pushed onto payload
+    Array.prototype.push.apply(payload, second);
+//    const merge = second.map(([entry]) => {payload.push(entry)});
+    this.refs.setPayload(payload);
+    return this.refs.asPayload;
+  }
+  
+  async spliceIntoRefs_(start, deleteCount, ...items) {
+    let payload =  await this.refs.asPayload;
+    console.log(typeof(payload));
+    let second = await this.addref.asPayload;
+    console.log(typeof(second));
+    payload.splice(payload.length, 0, ...second);
+    this.refs.asPayload = payload;
+    }
+  
   // Method to store entries in local storage as refEntries
   storeRefEntries() {
     localStorage.setItem('refEntries', JSON.stringify(this.#refEntries));
@@ -236,11 +252,11 @@ class MapStor {
   }
 
   mapHTML(refMap = this.refs.asPayload){
-    const result = refMap;
+    const result = refMap.reverse();
     const anchor = document.getElementById('mainAnchor');
     const ul = document.createElement('ul');
     // Clear the existing UL content
-      ul.innerHTML = '';
+    ul.innerHTML = '';
     const liElements = [];
     
     // Append all the updated LI elements to the UL in one step
@@ -255,6 +271,7 @@ class MapStor {
         });
     this.#refUl = ul;  
     anchor.appendChild(ul);
+    return this.#refUl
   }
   
   // =============================================================================
@@ -266,61 +283,48 @@ class MapStor {
 document.addEventListener('DOMContentLoaded', () => {
   
 // USE CASE create and async payload for ONE REF
-/*
+
   const bibref = new  Refs('ps10:5');
   // transform this into an init method of Refs
   bibref.fetchParallel()
     .then(results => {
-        bibref.mergePayload();
-        console.log(bibref);
-    })
+      console.log(results);
+//        bibref.mergePayload();
+   })
     .catch(error => {
         console.error("Error:", error);
     });
-*/
 
 // USE CASE MAPSTOR
+
   // Create an instance of MapStor, which will initialize based on the conditions provided
   const mapStor = new MapStor();
-  
-  // FETCH addref single in mapStor
-  mapStor.addref.fetchParallel()
-    .then(results => {
-//        console.log(mapStor);
-    })
-    .catch(error => {
-        console.error("Error:", error);
-    });
-
-  // FETCH refs multi in mapStor
+ 
+/* 
   mapStor.refs.fetchParallel()
-    .then(results => {
-        mapStor.refs.mergePayload(mapStor.addref);
-        mapStor.mapHTML();
-        console.log(mapStor.refs.asPayload);
-    })
-    .catch(error => {
-        console.error("Error:", error);
-    });
-
-  // SHOW all   
-//  console.log(mapStor);
-
-//  mapStor.addEntry('act4:2').then(()=> {console.log(mapStor)});
-
+  .then(()=> {mapStor.addref.fetchParallel()})
+//  .then(()=> {mapStor.spliceIntoRefs_()}) // idem
+  .then(()=> {
+    let ref = mapStor.ref.asPayload;
+    const addref = mapStor.ref.asPayload;
+    ref.splice(ref.length, 0, ...addref);
+    console.log(mapStor)}); // idem
+*/
 /*
-// works on addref !
-  mapStor.addEntry('act4:2')
-  .then(() => {
-    console.log(mapStor);
-//    mapStor.mapHTML(); 
-  });
-
-  mapStor.refs.fetchParallel()
-  .then(() => {
-    console.log(mapStor);
-    mapStor.mapHTML();
-  });
+  // is not async because fetchParallel awaits its result
+*/
+/*  
+    // SECOND, FETCH addref single in mapStor
+  mapStor.addref.fetchParallel()
+    .then((results) => {
+      const merger = mapStor.addref.mergePayload(results);
+      const html_ul = mapStor.mapHTML(results); // and DISPLAY
+      return merger
+    })
+    .then((fwd) => {console.log(fwd)})
+    .catch(error => {
+        console.error("Error:", error);
+    });
 */
 
 }); // end of listener code

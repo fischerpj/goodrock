@@ -11,9 +11,9 @@ format:
         repo: "fischerpj/ynot"
 ---
 
-> Based on class mapStorage only, in console.
+> Now based on mstor.js and class Refs instead of mapStorage.
 
 ::: {#mainAnchor}
 :::
 
-<script src="map_storage.js"></script>
+<script src="mstor.js"></script>
