@@ -16,4 +16,4 @@ format:
 ::: {#mainAnchor}
 :::
 
-<script src="mstor.js"></script>
+<script src="mvc_store.js"></script>
