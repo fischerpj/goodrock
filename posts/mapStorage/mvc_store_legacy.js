@@ -1,14 +1,29 @@
 // MVC_store.js
+// DO mapHTML !!
 
 //==============================================================================
 class Model {
   constructor() {
 //    this.data = [];
     this.data = new mStor();
-  } // end of constructor
+  }
 
+// INITIAL PAYLOAD with fetch
+  async load_init_() {
+    return await this.data.refs.fetchParallel()
+  }
+  
+  addItem(item) {
+    this.data.push(item);
+  }
+
+  getAllItems() {
+//    return this.data;
+    return this.data.refs.asPayload();
+  }
 }
 
+// =============================================================================
 // =============================================================================
 class mStor {
   #Xurlbase;
@@ -19,7 +34,6 @@ class mStor {
     const refEntries = localStorage.getItem('refEntries');
     const refidArray = localStorage.getItem('refidArray');
     this.#Xurlbase = 'https://jsfapi.netlify.app/.netlify/functions/bgw';
-    this.#refEntries = null;
     
 // =============================================================================
     // LOAD from localStorage
@@ -40,6 +54,9 @@ class mStor {
       this.#refEntries = new Array([['gen1:1', { refid: 'gen1:1',  Xurl: `${this.#Xurlbase}?param=${'gen1:1'}`,ts: '2025-01-20T09:28:00Z', category: 'biblical' }]]);
       this.refs = new nRefs(this.#refEntries);
     }
+    // 
+//    this.addref = new nRefs('matt1:1');
+    
   } // END of constructor
   
 // =============================================================================  
@@ -49,13 +66,27 @@ class mStor {
   get refEntries() {
     return Array.from(this.#refEntries);
   }
-
+  
+  async addRef_(item = "Rom5:8") {
+    this.addref = new nRefs(item);
+    return await this.addref.fetchParallel();
+  }
+  
+  async mergeRefs_() {
+    const refs = await this.refs.asPayload();
+    const addref = await this.addref.asPayload();
+    const merge = [...refs, ...addref];
+    this.refs.setPayload(merge);
+    return merge
+  }
 } // end of class mStor
+
 
 //==============================================================================
 class nRefs {
   #Xurlbase;
   #asEntry;
+  #asPayload; 
 
 //==============================================================================
 // CONSTRUCTORs ...
@@ -63,7 +94,6 @@ class nRefs {
   constructor(arg = "gen1:1", 
               Xurlbase= 'https://jsfapi.netlify.app/.netlify/functions/bgw') {
     this.#Xurlbase = Xurlbase;
-    this.asPayload = null;
     
     if (typeof arg === 'string') {
       const value = {
@@ -87,18 +117,47 @@ class nRefs {
     return Array.from(this.#asEntry);
   }
   
-    // Getter for a in refMap's random entry as MAP
+  // Getter of MAP
+  get asMap() {
+    return new Map(this.#asPayload);
+  }
+  
+  // a mere GETTER retruning a PROMISE for Payload
+  async asPayload() {
+      const data = await this.#asPayload;
+      console.log(data);
+      return Array.from(data);
+      }
+  
+   // ASYNC for Payload
+  setPayload(arg) {
+    this.#asPayload = arg;
+  }
+  
+  // ASYNC for lastEntry 
+  async lastPayload() {
+    const data = await this.#asPayload;
+    return Array.from(data).slice(-1);
+  }
+  
+  // Getter for a in refMap's random entry as MAP
   async randomPayload() {
-    const data = await this.asPayload;
+    const data = await this.#asPayload;
     const myload = Array.from(data);
     const randomIndex = Math.floor(Math.random() * myload.length);
     return myload.slice(randomIndex, randomIndex + 1);
   }
-
+  
+  // Getter REVERSE array of keys
+  get asKeys() {
+    const mimap = new Map(this.#asPayload);
+    return Array.from(mimap.keys());
+  }
+  
 //==============================================================================
 // FETCH payload
 
-  // Method to fetch multiple URLs in parallel is strict Model method
+  // Method to fetch multiple URLs in parallel
   async fetchParallel() {
   // references is #asEntry;
     const references = this.#asEntry;
@@ -128,8 +187,9 @@ class nRefs {
     });
     
     // set asPayload when all promises are fulfilled
-    this.asPayload = await Promise.all(fetchPromises);
-    return this.asPayload //is optional
+    this.#asPayload = await Promise.all(fetchPromises);
+    return this.#asPayload;
+
   }; // end of async function
   
 } // end of class nRefs
@@ -140,10 +200,12 @@ class View {
   
   constructor() {
     this.container =  document.getElementById('mainAnchor') 
+//    this.input = document.createElement('input');
     this.button = document.createElement('button');
       this.button.textContent = 'Add Item';
     this.list = document.createElement('ul');
     
+//    this.container.append(this.input, this.button, this.list);
     this.createMainDiv();
     this.addInputAndButtons();
   }
@@ -162,11 +224,11 @@ class View {
     // outputDiv and ul
       this.outputDiv = document.createElement('div');
       this.outputDiv.id = 'outputDiv';
-      
+/*      
       this.ul = document.createElement('ul');
       this.ul.id = "resultList";
       this.outputDiv.appendChild(this.ul);
-      
+*/      
       this.resultDiv = document.createElement('div');
       this.resultDiv.id = "resultDiv";
       this.outputDiv.appendChild(this.resultDiv);
@@ -258,16 +320,34 @@ class View {
     return this.inputField.value;
   }
 
+/*  
+  getInput() {
+    return this.input.value;
+  }
+*/
+
   clearInputField() {
     this.inputField.value = '';
   }
 
+  
   // =============================================================================  
 // DISPLAY methods  in VIEW
 
-  mapHTML(refMap){
+  justRenderItems(items = ['otto','titit']){
+    const anchor = document.getElementById('resultDiv');
+    anchor.innerHTML = '';
+    
+    items.forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = item;
+      anchor.appendChild(li);
+    });
+  }
+
+  async mapHTML(refMap){
     // the DATA
-    const result = refMap.reverse();
+    const result = refMap<reverse();
     // the DOM
     const anchor = document.getElementById('resultDiv');
       anchor.innerHTML = '';
@@ -298,18 +378,20 @@ class Controller {
   constructor(model, view) {
     this.model = model;
     this.view = view;
-    this.#version = "2.0.3 rebuild";
+    this.#version = "2.0.2 init_ +ViRaAl";
 
 // ADD the LISTENERS
     this.addEventListeners();
-  } // end of constructor
+  }
 
-init_display_() {
-//  this.model.data.refs.fetchParallel().then((res)=> this.displayParallel(res));
-  this.displayParallel();
-  alert('controller');  
-}
-
+ // Initialisation of Controller
+  init_() {
+    this.model.load_init_()
+    .then((res)=> {
+      this.view.mapHTML(res);
+      console.log("done init_")});
+    }
+  
 //------------------------------------------------------------------------------
 // Getter Setter of ...
   get version() {
@@ -317,6 +399,17 @@ init_display_() {
   }
 
 //------------------------------------------------------------------------------
+/*
+  handleAddItem() {
+    const item = this.view.getInput();
+    if (item) {
+      this.model.addItem(item);
+      this.view.clearInput();
+      this.view.renderItems(this.model.getAllItems());
+    }
+  }
+*/
+
   addEventListeners() {
     this.view.randomButton.addEventListener('click', this.viewRandom.bind(this));
     this.view.helpButton.addEventListener('click', this.helpme.bind(this));
@@ -340,7 +433,7 @@ init_display_() {
   }
   
   async viewAll() {
-      this.init_display_();
+    this.model.data.refs.asPayload().then((res)=> this.view.mapHTML(res));
   }
   
   async viewRandom() {
@@ -348,13 +441,12 @@ init_display_() {
   }
   
   async viewLast() {
-//    this.model.data.refs.lastPayload().then((res)=> this.view.mapHTML(res));
+    this.model.data.refs.lastPayload().then((res)=> this.view.mapHTML(res));
   }
   
   async viewInput() {
     const inputValue = this.view.getInputField();
 
-/*
     switch(inputValue) {
       case null :
         console.log( "NULL input does nothing");
@@ -370,54 +462,45 @@ init_display_() {
       default:
         console.log( "added NOT null input" + inputValue);
         this.model.data.addRef_(inputValue).then((res)=> this.view.mapHTML(res));
+
+/*
+        this.storageArray.addElement(inputValue);
+        const result = await this.augmentAndPopulateArray(this.storageArray.getLast());
+        console.log(this.storageArray.getLast().toString());
+*/
     }
 //    this.view.justRenderItems([inputValue,'itsme']);
     this.view.clearInputField();
-*/    
   }
-  
-    // shall be moved to Controller because it interacts with Model.data and View
-  displayParallel(refs = this.model.data.refs) {
-    try{
-      if(!refs.asPayload) {
-        refs.fetchParallel();
-      }
-//      const payload_shallow = refs.asPayload;
-      return this.view.mapHTML(refs.asPayload);
-    } catch ( error) {
-      console.error('Error', error)
-    }
-  } // end of displayParallel
-}  // end of Controller
+}  
 
 //==============================================================================
 // LAUNCH the APP
 document.addEventListener('DOMContentLoaded', () => {
-/*
-//  alert('hello start');
-  const addref = new nRefs('ps10');
-//  console.log(addref);
-//  console.log(addref.fetchParallel());
-//  addref.fetchParallel().then((res)=> console.log(res));
-  addref.displayParallel().then((res)=> console.log(res));
-*/  
-
   const model = new Model();
-//    model.data.refs.fetchParallel().then((res)=> console.log(res));
-// or equivalent
-//    model.init_load_().then((res) => console.log(res));
-// or equivalent
-//    model.init_load_(); // is just returning model.data.refs.fetchParallel()
-//    console.log(model.data.refs);
-//    console.log(model.data.refs.asPayload);
+  // fetchParallel  returns the Promise for #asPayload
+  // then executes as soon as fetchParallel is fulfilled
+//  model.data.refs.fetchParallel().then((res)=>console.log(res));
+// equivalent to 
 
   const view = new View();
 
   const controller = new Controller(model, view);
-//    controller.XdisplayParallel().then((res)=> console.log(res));
-//    controller.displayParallel(this.model.data.refs);
-   controller.init_display_();
+    controller.init_();
 
+/*  
+  // nb. load_init_ returns the promise of #asPayload retruned by fetchParallel 
+  model.load_init_()
+  .then(model.data.addRef_('Rev4:1'))
+  .then((res) => {
+    console.log(res);
+    model.data.mergeRefs_()})
+  .then((res) => {
+      console.log(res);
+      view.justRenderItems();
+      controller.viewAll()
+      });
+*/
 });
 
 //==============================================================================

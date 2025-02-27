@@ -4,16 +4,13 @@ author: "granPiero"
 date: "2025-01-23"
 categories: [bible]
 image: "brain.jpg"
-format: 
-  html:
-    comments:
-      utterances: 
-        repo: "fischerpj/ynot"
 ---
 
-> Now based on mstor.js and class Refs instead of mapStorage.
+> Now based on mvc2.js and class Refs instead of mapStorage.
+>
+> format: html: comments: utterances: repo: "fischerpj/ynot"
 
 ::: {#mainAnchor}
 :::
 
-<script src="mvc_store.js"></script>
+<script src="mvc2.js"></script>

@@ -1,35 +1,23 @@
-// MVC_store.js
-// DO mapHTML !!
+// MVC2.js
 
+//==============================================================================
 //==============================================================================
 class Model {
   constructor() {
 //    this.data = [];
     this.data = new mStor();
-  }
+  } // end of constructor
 
-// INITIAL PAYLOAD with fetch
-  async load_init_() {
-    return await this.data.refs.fetchParallel()
-  }
-  
-  addItem(item) {
-    this.data.push(item);
-  }
+// return entire Model after async payload !
+async init_load_() {
+  const payload = await this.data.refs.fetchParallel();
+  return this;
+} // end of init_load_
 
-  addRef_(item = "Rom5:8") {
-    const addref = new nRefs(item);
-    return addref
-  }
-  
-  getAllItems() {
-//    return this.data;
-    return this.data.refs.asPayload();
-  }
 }
 
-// =============================================================================
-// =============================================================================
+//==============================================================================
+//==============================================================================
 class mStor {
   #Xurlbase;
   #refSource;
@@ -39,6 +27,7 @@ class mStor {
     const refEntries = localStorage.getItem('refEntries');
     const refidArray = localStorage.getItem('refidArray');
     this.#Xurlbase = 'https://jsfapi.netlify.app/.netlify/functions/bgw';
+    this.#refEntries = null;
     
 // =============================================================================
     // LOAD from localStorage
@@ -59,9 +48,6 @@ class mStor {
       this.#refEntries = new Array([['gen1:1', { refid: 'gen1:1',  Xurl: `${this.#Xurlbase}?param=${'gen1:1'}`,ts: '2025-01-20T09:28:00Z', category: 'biblical' }]]);
       this.refs = new nRefs(this.#refEntries);
     }
-    // 
-//    this.addref = new nRefs(this.#refEntries.slice(-1));
-    
   } // END of constructor
   
 // =============================================================================  
@@ -71,20 +57,29 @@ class mStor {
   get refEntries() {
     return Array.from(this.#refEntries);
   }
-  
+
+  // ADDREF
   async addRef_(item = "Rom5:8") {
     this.addref = new nRefs(item);
     return await this.addref.fetchParallel();
   }
   
+  // MERGE
+    async XXmergeRefs_() {
+      const refs = await this.refs.asPayload();
+      console.log(refs);
+      const addref = await this.addref.asPayload();
+      refs.push(...addref);
+    return this.refs.asPayload();
+  }
 } // end of class mStor
 
-
+//==============================================================================
 //==============================================================================
 class nRefs {
   #Xurlbase;
   #asEntry;
-  #asPayload; 
+////  #dummy_button;
 
 //==============================================================================
 // CONSTRUCTORs ...
@@ -92,7 +87,9 @@ class nRefs {
   constructor(arg = "gen1:1", 
               Xurlbase= 'https://jsfapi.netlify.app/.netlify/functions/bgw') {
     this.#Xurlbase = Xurlbase;
-    
+    this.asPayload = [];
+////    this.#dummy_button = document.createElement('button'); // supports event firing
+
     if (typeof arg === 'string') {
       const value = {
         refid: arg,
@@ -105,6 +102,13 @@ class nRefs {
       } else {
             throw new Error('Invalid argument type');
       }
+      
+/*
+// LISTEN and react to 'payload_ready' signal
+      // listener can be implemented in View or preferrably Controller 
+      this.#dummy_button.addEventListener('payload_ready', function() {console.log("passed ready")});
+*/
+
   } // end of constructor nRefs
 
 //==============================================================================
@@ -115,41 +119,33 @@ class nRefs {
     return Array.from(this.#asEntry);
   }
   
-  // Getter of MAP
-  get asMap() {
-    return new Map(this.#asPayload);
+   // a mere GETTER returning a PROMISE for Payload
+  async XXasPayload() {
+      const data = await this.asPayload;
+      return Array.from(data).slice();
   }
-  
-  // ASYNC for Payload
-  async asPayload() {
-    const data = await this.#asPayload;
-    return Array.from(data);
-  }
-  
-  // ASYNC for lastEntry 
-  async lastPayload() {
-    const data = await this.#asPayload;
-    return Array.from(data).slice(-1);
-  }
-  
+
   // Getter for a in refMap's random entry as MAP
   async randomPayload() {
-    const data = await this.#asPayload;
+    const data = await this.asPayload;
     const myload = Array.from(data);
     const randomIndex = Math.floor(Math.random() * myload.length);
     return myload.slice(randomIndex, randomIndex + 1);
   }
   
-  // Getter REVERSE array of keys
-  get asKeys() {
-    const mimap = new Map(this.#asPayload);
-    return Array.from(mimap.keys());
+  // ASYNC for lastEntry 
+  async lastPayload() {
+    const data = await this.asPayload;
+    return Array.from(data).slice(-1);
   }
-  
+
+ 
+      
 //==============================================================================
 // FETCH payload
 
-  // Method to fetch multiple URLs in parallel
+   // Method to fetch multiple URLs in parallel is a strict Model method
+   //
   async fetchParallel() {
   // references is #asEntry;
     const references = this.#asEntry;
@@ -179,9 +175,15 @@ class nRefs {
     });
     
     // set asPayload when all promises are fulfilled
-    this.#asPayload = await Promise.all(fetchPromises);
-    return this.#asPayload;
+    this.asPayload = await Promise.all(fetchPromises);
+//    console.log(this.asPayload); // is fulfilled value
 
+    // DISPATCH event signalling 'payload_ready'
+    // source of firing must be in concerned object becoming ready
+////    const data_ready_event = new Event('payload_ready');
+////    this.#dummy_button.dispatchEvent(data_ready_event);
+    
+    return this.asPayload //is optional
   }; // end of async function
   
 } // end of class nRefs
@@ -192,12 +194,10 @@ class View {
   
   constructor() {
     this.container =  document.getElementById('mainAnchor') 
-//    this.input = document.createElement('input');
     this.button = document.createElement('button');
       this.button.textContent = 'Add Item';
     this.list = document.createElement('ul');
     
-//    this.container.append(this.input, this.button, this.list);
     this.createMainDiv();
     this.addInputAndButtons();
   }
@@ -216,11 +216,11 @@ class View {
     // outputDiv and ul
       this.outputDiv = document.createElement('div');
       this.outputDiv.id = 'outputDiv';
-/*      
+      
       this.ul = document.createElement('ul');
       this.ul.id = "resultList";
       this.outputDiv.appendChild(this.ul);
-*/      
+      
       this.resultDiv = document.createElement('div');
       this.resultDiv.id = "resultDiv";
       this.outputDiv.appendChild(this.resultDiv);
@@ -312,35 +312,16 @@ class View {
     return this.inputField.value;
   }
 
-/*  
-  getInput() {
-    return this.input.value;
-  }
-*/
-
   clearInputField() {
     this.inputField.value = '';
   }
 
-  
   // =============================================================================  
 // DISPLAY methods  in VIEW
 
-  justRenderItems(items = ['otto','titit']){
-    const anchor = document.getElementById('resultDiv');
-    anchor.innerHTML = '';
-    
-    items.forEach(item => {
-      const li = document.createElement('li');
-      li.textContent = item;
-      anchor.appendChild(li);
-    });
-  }
-
-  async mapHTML(refMap){
+  mapHTML(refMap){
     // the DATA
-    const result = refMap.reverse();
-    console.log(result);
+    const result = [...refMap].reverse();
     // the DOM
     const anchor = document.getElementById('resultDiv');
       anchor.innerHTML = '';
@@ -361,7 +342,7 @@ class View {
     anchor.appendChild(ul);
     return this.#refUl
   }
-}
+} // end of VIEW
 
 //==============================================================================
 //==============================================================================
@@ -371,11 +352,17 @@ class Controller {
   constructor(model, view) {
     this.model = model;
     this.view = view;
-    this.#version = "2.0.1 ViRaAl";
+    this.#version = "2.2.0 ViRaAl reverse";
 
 // ADD the LISTENERS
     this.addEventListeners();
-  }
+  } // end of constructor
+
+init_display_() {
+//  this.model.data.refs.fetchParallel().then((res)=> this.displayParallel(res));
+  this.displayParallel();
+  alert('controller');  
+}
 
 //------------------------------------------------------------------------------
 // Getter Setter of ...
@@ -384,20 +371,9 @@ class Controller {
   }
 
 //------------------------------------------------------------------------------
-/*
-  handleAddItem() {
-    const item = this.view.getInput();
-    if (item) {
-      this.model.addItem(item);
-      this.view.clearInput();
-      this.view.renderItems(this.model.getAllItems());
-    }
-  }
-*/
-
   addEventListeners() {
     this.view.randomButton.addEventListener('click', this.viewRandom.bind(this));
-    this.view.helpButton.addEventListener('click', this.helpme.bind(this));
+    this.view.helpButton.addEventListener('click', this.viewLast.bind(this));
     this.view.viewButton.addEventListener('click', this.viewInput.bind(this));
     this.view.allButton.addEventListener('click', this.viewAll.bind(this));
 /*    this.view.refButton.addEventListener('click', () => this.refOnly());
@@ -418,11 +394,11 @@ class Controller {
   }
   
   async viewAll() {
-    this.model.data.refs.asPayload().then((res)=> this.view.mapHTML(res));
+ //   this.model.data.refs.asPayload().then((res) => this.view.mapHTML(res));
+    this.view.mapHTML(await this.model.data.refs.asPayload);
   }
   
   async viewRandom() {
-    console.log("here viewRandom");
     this.model.data.refs.randomPayload().then((res) => this.view.mapHTML(res));
   }
   
@@ -432,8 +408,7 @@ class Controller {
   
   async viewInput() {
     const inputValue = this.view.getInputField();
-    console.log(inputValue);
-    
+
     switch(inputValue) {
       case null :
         console.log( "NULL input does nothing");
@@ -447,37 +422,66 @@ class Controller {
         console.log( "version: "+ this.version);
         break;
       default:
-        console.log( "added NOT null input" + inputValue);
-        this.model.data.addRef_(inputValue).then((res)=> this.view.mapHTML(res));
+        console.log( "added NOT null input " + inputValue);
+        this.model.data.addRef_(inputValue)
+        .then((res) => {
+          this.model.data.refs.asPayload.push(...res);
+          this.view.mapHTML(res);
+          });
 
-/*
-        this.storageArray.addElement(inputValue);
-        const result = await this.augmentAndPopulateArray(this.storageArray.getLast());
-        console.log(this.storageArray.getLast().toString());
-*/
-    }
+//        this.model.data.refs.asPayload.push(...this.model.data.addref.asPayload)
+        /*        .then((res)=> this.model.data.mergeRefs_())
+        .then((res)=> this.view.mapHTML(res));
+*/        
 //    this.view.justRenderItems([inputValue,'itsme']);
-    this.view.clearInputField();
-  }
-}  
+        this.view.clearInputField();
+      }}
+  
+    // shall be moved to Controller because it interacts with Model.data and View
+  displayParallel(refs = this.model.data.refs) {
+    try{
+      if(!refs.asPayload) {
+        refs.fetchParallel();
+      }
+//      const payload_shallow = refs.asPayload;
+      return this.view.mapHTML(refs.asPayload);
+    } catch ( error) {
+      console.error('Error', error)
+    }
+  } // end of displayParallel
+}  // end of Controller
+
+
+//==============================================================================
+//==============================================================================
 
 //==============================================================================
 // LAUNCH the APP
 document.addEventListener('DOMContentLoaded', () => {
+
+/*
+  const addref = new nRefs('ps10');
+//    console.log(addref); // is.null(asPayload)
+//    console.log(addref.fetchParallel()); // return value is a Promise of asPayload 
+
+// NB: all LOGIC for payload_ready event is embedded in nRefs class
+  addref.fetchParallel()
+  .then((res) => {console.log(res);}); // when Promise is fulfilled
+*/
+
+
+// MODEL
   const model = new Model();
-    model.data.addRef_('Rev4:1').then(console.log(model));
-  
+//  model.data.refs.fetchParallel().then((res)=> console.log(res));
+// OR
+    model.init_load_().then((res) => console.log(res)); // is full model 
+
+// VIEW
   const view = new View();
 
+// CONTROLLER
   const controller = new Controller(model, view);
   
-  // nb. load_init_ returns the promise of #asPayload retruned by fetchParallel 
-  model.load_init_()
-    .then((res) => {
-      view.justRenderItems();
-      controller.viewAll()
-      });
 
-});
-
+}) // end of DOM listener
 //==============================================================================
