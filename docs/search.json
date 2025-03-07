@@ -39,7 +39,7 @@
     "href": "posts/mapStorage/index.html",
     "title": "mapStorage",
     "section": "",
-    "text": "Now based on mvc2.js and class Refs instead of mapStorage.\nformat: html: comments: utterances: repo: “fischerpj/ynot”"
+    "text": "Now based on fast_mvc.js rather than mvc2.js and class Refs instead of mapStorage.\nformat: html: comments: utterances: repo: “fischerpj/ynot”"
   },
   {
     "objectID": "posts/post-with-code/index.html",
