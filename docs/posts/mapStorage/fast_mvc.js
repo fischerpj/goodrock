@@ -8,16 +8,12 @@
 // Model aka Data
 //==============================================================================
 
-// Model
-class Model {
-  #v_refUl;
-  
+// App
+class App {
+
   constructor() {
-//    this.data = [];
     this.m_data = new mStorage();
-    
-    this.v_container =  document.getElementById('mainAnchor');
-    this.v_createMainDiv();
+    this.v_ui = new View();
 
   } // end of constructor
   
@@ -26,41 +22,7 @@ class Model {
     this.m_data.getPayload().then(data => this.v_mapHTML(data)).catch(error => console.error(error));
   }
   
-  //------------------------------------------------------------------------------  
-  v_createMainDiv() {
-    // mainDiv : check if it already exists
-    if (!document.getElementById('mainDiv')) {
-      this.mainDiv = document.createElement('div');
-      this.mainDiv.id = 'mainDiv';
-
-    // inputDiv
-      this.inputDiv = document.createElement('div');
-      this.inputDiv.id = 'inputDiv';
-
-    // outputDiv and ul
-      this.outputDiv = document.createElement('div');
-      this.outputDiv.id = 'outputDiv';
-      
-      this.ul = document.createElement('ul');
-      this.ul.id = "resultList";
-      this.outputDiv.appendChild(this.ul);
-      
-      this.resultDiv = document.createElement('div');
-      this.resultDiv.id = "resultDiv";
-      this.resultDiv.innerHTML = "Waiting for Data...";
-      this.outputDiv.appendChild(this.resultDiv);
-
-    // assemble the divs into contaner
-      this.mainDiv.appendChild(this.inputDiv);
-      this.mainDiv.appendChild(this.outputDiv);
-      this.v_container.appendChild(this.mainDiv);
-    }
-       // Create a new ul element
-    const ul = document.createElement('ul');
-      ul.innerHTML = "empty"
-      this.#v_refUl = ul;
-  } // createMainDiv
-  
+//------------------------------------------------------------------------------
   v_mapHTML(refMap){
     // the DATA
     const result = [...refMap].reverse();
@@ -80,12 +42,12 @@ class Model {
           li.textContent = key + " " +content_result;
           ul.appendChild(li)
         });
-    this.#v_refUl = ul;  
+    this.v_ui.refUl = ul;  
     anchor.appendChild(ul);
-    return this.#v_refUl;
+    return this.v_ui.refUl;
   }
   
-} // end of Class
+} // end of Class App
 
 // mStorage 
 class mStorage {
@@ -97,7 +59,7 @@ class mStorage {
 
   constructor(defaultKeyId = 'refidArray', 
               initValue    = "gen1:1") {
-    this.#version       = '0.1.4 m_init_load_, getPayload, fetchParallel '; 
+    this.#version       = '0.1.5 v_ui, m_init_load_, getPayload, fetchParallel '; 
     this.#defaultKeyId  = defaultKeyId;
     this.#initValue     = initValue;
     this.#Xurlbase      = 'https://jsfapi.netlify.app/.netlify/functions/bgw';
@@ -249,6 +211,117 @@ class mStorage {
 //==============================================================================
 // View
 //==============================================================================
+//==============================================================================
+class View {
+
+  constructor() {
+    this.v_container =  document.getElementById('mainAnchor');
+
+    this.v_createMainDiv();
+    this.v_addInputAndButtons();
+  }
+  
+  //------------------------------------------------------------------------------  
+  v_createMainDiv() {
+    // mainDiv : check if it already exists
+    if (!document.getElementById('mainDiv')) {
+      this.mainDiv = document.createElement('div');
+      this.mainDiv.id = 'mainDiv';
+
+    // inputDiv
+      this.inputDiv = document.createElement('div');
+      this.inputDiv.id = 'inputDiv';
+
+    // outputDiv and ul
+      this.outputDiv = document.createElement('div');
+      this.outputDiv.id = 'outputDiv';
+      
+      this.ul = document.createElement('ul');
+      this.ul.id = "resultList";
+      this.outputDiv.appendChild(this.ul);
+      
+      this.resultDiv = document.createElement('div');
+      this.resultDiv.id = "resultDiv";
+      this.resultDiv.innerHTML = "Waiting for Loading Data...";
+      this.outputDiv.appendChild(this.resultDiv);
+
+    // assemble the divs into contaner
+      this.mainDiv.appendChild(this.inputDiv);
+      this.mainDiv.appendChild(this.outputDiv);
+      this.v_container.appendChild(this.mainDiv);
+    }
+    // Create a new ul element
+    const ul = document.createElement('ul');
+      ul.innerHTML = "empty"
+      this.refUl = ul;
+  } // createMainDiv
+  
+  //------------------------------------------------------------------------------
+  v_addInputAndButtons() {
+  // 1. Create the .row, .container div
+    this.rowDiv = document.createElement('div');
+    this.rowDiv.classList.add('row', 'container');
+
+  // 2. Create the image
+    const image = document.createElement('img');
+    image.src = 'brain.jpg';
+    image.alt = 'Brain Image';
+    image.width = 100;
+    image.className = 'image';        
+
+  // 3. Create the input field
+    this.inputField = document.createElement('input');
+    this.inputField.type = 'text';
+    this.inputField.placeholder = 'ref here';
+    this.inputField.classList.add("form-control");
+    this.inputField.style.width = '200px'; // Adjust the width as needed
+    
+  // 4. Append the input field and image to the rowDiv container
+    this.rowDiv.appendChild(this.inputField);
+    this.rowDiv.appendChild(image);
+
+// ALL BUTTONS otherwise
+    this.viewButton = document.createElement('button');
+    this.viewButton.textContent = 'View';
+    this.viewButton.classList.add("btn", "btn-primary");
+
+    this.randomButton = document.createElement('button');
+    this.randomButton.textContent = 'Random';
+    this.randomButton.classList.add("btn", "btn-warning");
+
+    this.allButton = document.createElement('button');
+    this.allButton.innerHTML = '&nbsp;&nbsp;&nbsp;All&nbsp;&nbsp;&nbsp;';
+    this.allButton.classList.add("btn", "btn-success");
+
+    this.refButton = document.createElement('button');
+    this.refButton.textContent = 'Refs';
+    this.refButton.classList.add("btn", "btn-info");
+    
+    this.deleteButton = document.createElement('button');
+    this.deleteButton.textContent = 'Del';
+    this.deleteButton.classList.add("btn", "btn-danger");
+ 
+    this.helpButton = document.createElement('button');
+    this.helpButton.textContent = 'H';
+    this.helpButton.classList.add("btn", "btn-primary");
+    
+    this.buttonDiv = document.createElement('div');
+    this.buttonDiv.id = 'buttonDiv';
+    this.buttonDiv.classList.add("button-row");
+
+    this.buttonDiv.appendChild(this.viewButton);
+    this.buttonDiv.appendChild(this.randomButton);
+    this.buttonDiv.appendChild(this.allButton);
+    this.buttonDiv.appendChild(this.refButton);
+    this.buttonDiv.appendChild(this.deleteButton);
+    this.buttonDiv.appendChild(this.helpButton);
+
+  // Appends two divs to the container
+    this.inputDiv.appendChild(this.rowDiv);
+    this.inputDiv.appendChild(this.buttonDiv);
+  } // end of addInputAndButtons
+  
+} // end of class View
 
 //==============================================================================
 // Controller
@@ -260,9 +333,9 @@ class mStorage {
 
 document.addEventListener('DOMContentLoaded', () => {
 
-const model = new Model();
-  model.m_init_load_();
-  console.log(model);
+const app = new App();
+  app.m_init_load_();
+//  console.log(app);
 //model.m_data.fetchParallel().then((res)=>console.log(res));  
 //model.m_data.getPayload().then(data => console.log(data)).catch(error => console.error(error));
 
