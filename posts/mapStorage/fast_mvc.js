@@ -14,15 +14,20 @@ class App {
   constructor() {
     this.m_data = new mStorage();
     this.v_ui = new View();
+    this.c_addEventListeners();
+    this.version = '0.2.0'; 
 
   } // end of constructor
-  
-  // the Payload is gained outside the constructors because of async fetches
+
+//------------------------------------------------------------------------------  
+// the Payload is gained outside the constructors because of async fetches
   m_init_load_() {
-    this.m_data.getPayload().then(data => this.v_mapHTML(data)).catch(error => console.error(error));
+    this.m_data.fetchParallel()
+    .then(data => this.v_mapHTML(data)).catch(error => console.error(error));
   }
   
 //------------------------------------------------------------------------------
+// display an Array
   v_mapHTML(refMap){
     // the DATA
     const result = [...refMap].reverse();
@@ -47,8 +52,95 @@ class App {
     return this.v_ui.refUl;
   }
   
+  //------------------------------------------------------------------------------
+  // this is App
+  c_addEventListeners() {
+    this.v_ui.helpButton.addEventListener('click', this.v_helpme.bind(this));
+    this.v_ui.randomButton.addEventListener('click', this.v_randomPayload.bind(this));
+    this.v_ui.viewButton.addEventListener('click', this.v_input.bind(this));
+    this.v_ui.allButton.addEventListener('click', this.v_allPayload.bind(this));
+/*    this.view.refButton.addEventListener('click', () => this.refOnly());
+    this.view.deleteButton.addEventListener('click', () => this.removeLastRef());
+*/
+}
+
+  async v_input() {
+    const inputValue = this.v_ui.v_getInputField();
+
+    switch(inputValue) {
+      case null :
+        console.log( "NULL input does nothing");
+        break;
+      case "" :
+        console.log( "empty string input does v_lastPayload");
+        this.v_lastPayload();
+//        this.model.data.refs.lastPayload().then((res) => this.view.mapHTML(res));
+        break;  
+      case "?version" :
+        console.log( "version: "+ this.version);
+        break;
+      default:
+        console.log( "added NOT null input " + inputValue);
+        const res = this.m_data.from_ObjectsArray_(this.m_data.build_ObjectsArray_(inputValue));
+//        this.v_helpme(JSON.stringify(res));
+//        this.m_data.returnFetchParallel(res).then((data)=> this.v_helpme(JSON.stringify(data)));
+        this.m_data.returnFetchParallel(res).then((data)=> this.v_mapHTML(data));
+/*      this.model.data.addRef_(inputValue)
+        .then((res) => {
+          this.model.data.refs.asPayload.push(...res);
+          this.view.mapHTML(res);
+          });
+*/
+//        this.model.data.refs.asPayload.push(...this.model.data.addref.asPayload)
+        /*        .then((res)=> this.model.data.mergeRefs_())
+        .then((res)=> this.view.mapHTML(res));
+*/        
+//    this.view.justRenderItems([inputValue,'itsme']);
+        this.v_ui.v_clearInputField();
+      }}
+
+  v_helpme() {
+    const ul = document.getElementById('resultDiv');
+      ul.innerHTML = null;
+    const liElements = [];
+    const li = document.createElement('li');
+      li.textContent = this.version; // Initial placeholder text
+      ul.appendChild(li);
+  }
+  
+  // for lastEntry 
+  v_lastPayload() {
+    this.m_data.asPayload
+    .then(data => {
+      const result = Array.from(data).slice(-1);
+      console.log(result);
+      this.v_mapHTML(result)})
+    .then(() => console.log("lastPayload"))
+    .catch(error => console.error(error));
+  }
+  
+    // for lastEntry 
+  v_allPayload() {
+    this.m_data.asPayload
+    .then(data => this.v_mapHTML(data))
+    .then(() => console.log("allPayload"))
+    .catch(error => console.error(error));
+  }
+  
+  v_randomPayload() {
+    this.m_data.asPayload
+    .then(data => {
+      const myload = Array.from(data);
+      const randomIndex = Math.floor(Math.random() * myload.length);
+      const result = myload.slice(randomIndex, randomIndex + 1);
+      this.v_mapHTML(result)})
+    .then(() => console.log("randomPayload"))
+    .catch(error => console.error(error));
+  }
+  
 } // end of Class App
 
+//------------------------------------------------------------------------------
 // mStorage 
 class mStorage {
   #version;
@@ -65,8 +157,7 @@ class mStorage {
     this.#Xurlbase      = 'https://jsfapi.netlify.app/.netlify/functions/bgw';
     
     this.asPayload = null;  // Initialize the data property
-    this.isFetching = false;  // To track if data fetching is in progress
-    
+
     const refEntries = localStorage.getItem('refEntries');
     const refidArray = localStorage.getItem('refidArray');
     
@@ -126,6 +217,16 @@ class mStorage {
         localStorage.setItem(key, JSON.stringify(value));
   }
 
+// build an Array of one Object {refid, ts}
+  build_ObjectsArray_(arg= this.#initValue){
+    const arr = [];
+    const record =  new Object({
+      refid: arg, 
+      ts: new Date().toISOString()});
+    arr.push(record);
+    return arr;
+  }
+
   // convert ArrayofObjects to ArrayOfArray[2]
   from_ObjectsArray_(arr = this.getItem_(this.#defaultKeyId)) {
     const result = arr.map(item => [
@@ -148,21 +249,19 @@ class mStorage {
       })
   }   
   
-//==============================================================================
-// FETCH payload
-// Method to fetch multiple URLs in parallel is a strict Model method
-
-  async fetchParallel() {
+//------------------------------------------------------------------------------
+// method as mStorage.returnFetchParallel
+// ... to fetch multiple URLs in parallel is a strict Model method
+  async returnFetchParallel(ref = this.cachedValue) {
   // references is #asEntry;
-    const references = this.cachedValue;
-    
+    const references = ref;
+    console.log(references);
+
     const fetchPromises = references.map(async (entry) => {
       // destructure one record being an array[2]
       const [key, value] = entry;
-
       if (value && value.Xurl) {
         try {
-          this.isFetching = true;
           const response = await fetch(value.Xurl);
           if (response.ok) {
             const payload = await response.json();
@@ -175,37 +274,71 @@ class mStorage {
         } catch (error) {
           console.error(`Fetch operation for ${value.Xurl} failed:`, error);
           return [key, null ];
-        } finally {
-            this.isFetching = false;
-        }
+        } finally {}
+      } else {
+        return [ key, null ];
+      };
+    });
+    
+// JUST RETURN the Promise.all, no property is impacted here
+    return Promise.all(fetchPromises);
+  }; // end of async function
+
+  async fetchParallel() {
+  // references is #asEntry;
+    const references = this.cachedValue;
+
+    const fetchPromises = references.map(async (entry) => {
+      // destructure one record being an array[2]
+      const [key, value] = entry;
+      if (value && value.Xurl) {
+        try {
+          const response = await fetch(value.Xurl);
+          if (response.ok) {
+            const payload = await response.json();
+            // all properties of value and payload are merged into one object
+            return [ key, {...value, ...payload} ];
+          } else {
+            console.error(`Network response for ${value.Xurl} was not ok.`);
+            return [ key, null ];
+          }
+        } catch (error) {
+          console.error(`Fetch operation for ${value.Xurl} failed:`, error);
+          return [key, null ];
+        } finally {}
       } else {
         return [ key, null ];
       };
     });
     
     // set asPayload when all promises are fulfilled
-    this.asPayload = await Promise.all(fetchPromises);
+//    this.asPayload = await Promise.all(fetchPromises);
+    this.asPayload = Promise.all(fetchPromises);
     return this.asPayload //is optional
   }; // end of async function
-  
-  async getPayload() {
-        if (this.asPayload !== null) {
-            return this.asPayload;
+    
+//------------------------------------------------------------------------------
+// when getPayload finishes, the payload IS returned fulfilled 
+async getPayload() {
+ // if payload is not available, then fetch it   
+ if (this.asPayload !== null) {
+          console.log("not null");
+          return this.asPayload;
         } else {
+           // start fetching if not done
             if (!this.isFetching) {
-                await this.fetchParallel();
-            }
-            while (this.isFetching) {
-                await new Promise(resolve => setTimeout(resolve, 100));  // Wait for data fetching to complete
-            }
-            if (this.asPayload !== null) {
-                return this.asPayload;
+              await this.fetchParallel();
             } else {
-                throw new Error('Failed to fetch data');
+            // Wait for termination of fetch  
+                while (this.isFetching) {
+                  console.log(new Date().toISOString());
+                  await new Promise(resolve => setTimeout(resolve, 100));  // Wait for data fetching to complete
+                }
             }
+          return this.asPayload;
         }
     }
-
+    
 } // end of class  mStor
 
 //==============================================================================
@@ -236,9 +369,9 @@ class View {
       this.outputDiv = document.createElement('div');
       this.outputDiv.id = 'outputDiv';
       
-      this.ul = document.createElement('ul');
-      this.ul.id = "resultList";
-      this.outputDiv.appendChild(this.ul);
+//      this.ul = document.createElement('ul');
+//      this.ul.id = "resultList";
+//      this.outputDiv.appendChild(this.ul);
       
       this.resultDiv = document.createElement('div');
       this.resultDiv.id = "resultDiv";
@@ -312,14 +445,22 @@ class View {
     this.buttonDiv.appendChild(this.viewButton);
     this.buttonDiv.appendChild(this.randomButton);
     this.buttonDiv.appendChild(this.allButton);
-    this.buttonDiv.appendChild(this.refButton);
-    this.buttonDiv.appendChild(this.deleteButton);
+//    this.buttonDiv.appendChild(this.refButton);
+//    this.buttonDiv.appendChild(this.deleteButton);
     this.buttonDiv.appendChild(this.helpButton);
 
   // Appends two divs to the container
     this.inputDiv.appendChild(this.rowDiv);
     this.inputDiv.appendChild(this.buttonDiv);
   } // end of addInputAndButtons
+  
+  v_getInputField() {
+    return this.inputField.value;
+  }
+
+  v_clearInputField() {
+    this.inputField.value = '';
+  }
   
 } // end of class View
 
@@ -335,9 +476,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const app = new App();
   app.m_init_load_();
-//  console.log(app);
-//model.m_data.fetchParallel().then((res)=>console.log(res));  
-//model.m_data.getPayload().then(data => console.log(data)).catch(error => console.error(error));
+  app.v_lastPayload();
+
+  console.log(app);
 
 
 }) // end of DOM listener
