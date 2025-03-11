@@ -15,7 +15,7 @@ class App {
     this.m_data = new mStorage();
     this.v_ui = new View();
     this.c_addEventListeners();
-    this.version = '0.2.0'; 
+    this.version = '0.2.2 view_merge'; 
 
   } // end of constructor
 
@@ -25,7 +25,7 @@ class App {
     this.m_data.fetchParallel()
     .then(data => this.v_mapHTML(data)).catch(error => console.error(error));
   }
-  
+
 //------------------------------------------------------------------------------
 // display an Array
   v_mapHTML(refMap){
@@ -81,24 +81,26 @@ class App {
         break;
       default:
         console.log( "added NOT null input " + inputValue);
-        const res = this.m_data.from_ObjectsArray_(this.m_data.build_ObjectsArray_(inputValue));
-//        this.v_helpme(JSON.stringify(res));
-//        this.m_data.returnFetchParallel(res).then((data)=> this.v_helpme(JSON.stringify(data)));
-        this.m_data.returnFetchParallel(res).then((data)=> this.v_mapHTML(data));
-/*      this.model.data.addRef_(inputValue)
-        .then((res) => {
-          this.model.data.refs.asPayload.push(...res);
-          this.view.mapHTML(res);
-          });
-*/
-//        this.model.data.refs.asPayload.push(...this.model.data.addref.asPayload)
-        /*        .then((res)=> this.model.data.mergeRefs_())
-        .then((res)=> this.view.mapHTML(res));
-*/        
-//    this.view.justRenderItems([inputValue,'itsme']);
+
+        this.m_data.addValue = this.m_data.from_ObjectsArray_(this.m_data.build_ObjectsArray_(inputValue));
+        this.m_data.returnFetchParallel(this.m_data.addValue)
+        .then(data => this.v_mapHTML(data)).catch(error => console.error(error));
+
+        this.v_addPayload()
+        .then((res)=>console.log(resolve));
+
         this.v_ui.v_clearInputField();
       }}
 
+//------------------------------------------------------------------------------
+  async v_addPayload() {
+    let promArray = [this.m_data.asPayload, this.m_data.addPayload];
+    const [merge,add] = await Promise.all(promArray);
+    merge.push(...add);
+    this.m_data.asPayload = Promise.resolve(merge);
+    return this.m_data.asPayload
+  }
+ 
   v_helpme() {
     const ul = document.getElementById('resultDiv');
       ul.innerHTML = null;
@@ -249,13 +251,11 @@ class mStorage {
       })
   }   
   
-//------------------------------------------------------------------------------
 // method as mStorage.returnFetchParallel
 // ... to fetch multiple URLs in parallel is a strict Model method
   async returnFetchParallel(ref = this.cachedValue) {
   // references is #asEntry;
     const references = ref;
-    console.log(references);
 
     const fetchPromises = references.map(async (entry) => {
       // destructure one record being an array[2]
@@ -281,9 +281,10 @@ class mStorage {
     });
     
 // JUST RETURN the Promise.all, no property is impacted here
-    return Promise.all(fetchPromises);
+    this.addPayload = Promise.all(fetchPromises);
+    return this.addPayload;
   }; // end of async function
-
+  
   async fetchParallel() {
   // references is #asEntry;
     const references = this.cachedValue;
@@ -476,7 +477,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const app = new App();
   app.m_init_load_();
-  app.v_lastPayload();
+//  app.v_lastPayload();
 
   console.log(app);
 
