@@ -15,7 +15,7 @@ class App {
     this.m_data = new mStorage();
     this.v_ui = new View();
     this.c_addEventListeners();
-    this.version = '0.2.2 view_merge'; 
+    this.version = '0.2.3 write_storage'; 
 
   } // end of constructor
 
@@ -84,11 +84,17 @@ class App {
 
         this.m_data.addValue = this.m_data.from_ObjectsArray_(this.m_data.build_ObjectsArray_(inputValue));
         this.m_data.returnFetchParallel(this.m_data.addValue)
-        .then(data => this.v_mapHTML(data)).catch(error => console.error(error));
+        .then(data => {
+          this.v_mapHTML(data);
+        })
+        .catch(error => console.error(error));
 
         this.v_addPayload()
-        .then((res)=>console.log(resolve));
-
+        .then((res) => {
+          this.m_data.cachedValue = res;
+          this.m_data.write_storage_();
+        })
+        
         this.v_ui.v_clearInputField();
       }}
 
@@ -203,6 +209,7 @@ class mStorage {
  
   // write-through storage via cache
   write_storage_() {
+    console.log(this.cachedValue);
     if (this.#defaultKeyId == 'refidArray') { 
       const out = this.to_ObjectsArray_(this.cachedValue);
       this.setItem_(this.#defaultKeyId, out);
