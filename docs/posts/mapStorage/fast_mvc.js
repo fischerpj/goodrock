@@ -59,8 +59,8 @@ class App {
     this.v_ui.randomButton.addEventListener('click', this.v_randomPayload.bind(this));
     this.v_ui.viewButton.addEventListener('click', this.v_input.bind(this));
     this.v_ui.allButton.addEventListener('click', this.v_allPayload.bind(this));
-/*    this.view.refButton.addEventListener('click', () => this.refOnly());
-    this.view.deleteButton.addEventListener('click', () => this.removeLastRef());
+    this.v_ui.refButton.addEventListener('click', this.v_getUniqueRefids.bind(this));
+/*    this.view.deleteButton.addEventListener('click', () => this.removeLastRef());
 */
 }
 
@@ -121,7 +121,6 @@ class App {
     this.m_data.asPayload
     .then(data => {
       const result = Array.from(data).slice(-1);
-      console.log(result);
       this.v_mapHTML(result)})
     .then(() => console.log("lastPayload"))
     .catch(error => console.error(error));
@@ -144,6 +143,22 @@ class App {
       this.v_mapHTML(result)})
     .then(() => console.log("randomPayload"))
     .catch(error => console.error(error));
+  }
+  
+  // Method to retrieve UNIQUE refids
+  v_getUniqueRefids() {
+      
+    this.m_data.asPayload
+    .then(data => {
+      const refidSet = new Set();
+      
+      const myload = Array.from(data);
+      myload.forEach((element) => {
+        const [key,value] = element;
+        refidSet.add(key);
+      });
+    return Array.from(refidSet);
+    })
   }
   
 } // end of Class App
@@ -209,7 +224,6 @@ class mStorage {
  
   // write-through storage via cache
   write_storage_() {
-    console.log(this.cachedValue);
     if (this.#defaultKeyId == 'refidArray') { 
       const out = this.to_ObjectsArray_(this.cachedValue);
       this.setItem_(this.#defaultKeyId, out);
@@ -453,7 +467,7 @@ class View {
     this.buttonDiv.appendChild(this.viewButton);
     this.buttonDiv.appendChild(this.randomButton);
     this.buttonDiv.appendChild(this.allButton);
-//    this.buttonDiv.appendChild(this.refButton);
+    this.buttonDiv.appendChild(this.refButton);
 //    this.buttonDiv.appendChild(this.deleteButton);
     this.buttonDiv.appendChild(this.helpButton);
 

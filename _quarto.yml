@@ -12,7 +12,9 @@ website:
 
 format:
   html:
-    theme: lumen
+    theme: 
+      light: lumen
+      dark: darkly
     css: styles.css
 
 editor: visual
