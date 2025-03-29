@@ -1,0 +1,14 @@
+---
+title: "verseWorker"
+author: "granPiero" 
+date: "2025-01-23"
+categories: [bible]
+image: "brain.jpg"
+---
+
+> Now based on mvc_worker.js instead of mapStorage.
+
+::: {#mainAnchor}
+:::
+
+<script src="mvc_worker.js"></script>

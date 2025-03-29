@@ -1,38 +1,17 @@
 [
   {
-    "objectID": "posts/memo_verse_dev/index.html",
-    "href": "posts/memo_verse_dev/index.html",
-    "title": "memo_verse_DEV",
+    "objectID": "posts/verseWorker/index.html",
+    "href": "posts/verseWorker/index.html",
+    "title": "verseWorker",
     "section": "",
-    "text": "This is on-your-device-only-persistent-memory of bible references, that you accumulate on the fly. However one distinct memory zone per browser TODO: use cachedMap althrough"
+    "text": "Now based on mvc_worker.js instead of mapStorage."
   },
   {
-    "objectID": "posts/welcome/index.html",
-    "href": "posts/welcome/index.html",
-    "title": "Welcome To My Blog",
+    "objectID": "posts/post-with-code/index.html",
+    "href": "posts/post-with-code/index.html",
+    "title": "Post With Code",
     "section": "",
-    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
-  },
-  {
-    "objectID": "posts/memo_verse/index.html",
-    "href": "posts/memo_verse/index.html",
-    "title": "memo_verse",
-    "section": "",
-    "text": "This is on-your-device-only-persistent-memory of bible references, that you accumulate on the fly. However one distinct memory zone per browser\n\nTODO: use cachedMap althrough"
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this blog named goodrock having listing of posts.\n\n\n\n\n\n\n\n\n\n\n\n\nmemo_verse\n\n\n\n\n\n\n\n\n\n\n\nDec 28, 2024\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nmapStorage\n\n\n\n\n\n\n\n\n\n\n\nJan 23, 2025\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\n\n\n\n\nApr 7, 2024\n\n\nTristan O’Malley\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\n\n\n\n\n\n\n\n\nApr 10, 2024\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\nmemo_verse_DEV\n\n\n\n\n\n\n\n\n\n\n\nJan 23, 2025\n\n\ngranPiero\n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "goodrock",
-    "section": "",
-    "text": "mapStorage\n\n\n\n\n\n\nbible\n\n\n\n\n\n\n\n\n\nJan 23, 2025\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nmemo_verse_DEV\n\n\n\n\n\n\nbible\n\n\n\n\n\n\n\n\n\nJan 23, 2025\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nmemo_verse\n\n\n\n\n\n\nbible\n\n\n\n\n\n\n\n\n\nDec 28, 2024\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nApr 10, 2024\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nApr 7, 2024\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
+    "text": "This is a post with executable code.\n\n1 + 1\n\n[1] 2"
   },
   {
     "objectID": "posts/mapStorage/index.html",
@@ -42,10 +21,38 @@
     "text": "Now based on fast_mvc.js rather than mvc2.js and class Refs instead of mapStorage.\nformat: html: comments: utterances: repo: “fischerpj/ynot”"
   },
   {
-    "objectID": "posts/post-with-code/index.html",
-    "href": "posts/post-with-code/index.html",
-    "title": "Post With Code",
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "goodrock",
     "section": "",
-    "text": "This is a post with executable code.\n\n1 + 1\n\n[1] 2"
+    "text": "mapStorage\n\n\n\n\n\n\nbible\n\n\n\n\n\n\n\n\n\nJan 23, 2025\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nmemo_verse_DEV\n\n\n\n\n\n\nbible\n\n\n\n\n\n\n\n\n\nJan 23, 2025\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nverseWorker\n\n\n\n\n\n\nbible\n\n\n\n\n\n\n\n\n\nJan 23, 2025\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nmemo_verse\n\n\n\n\n\n\nbible\n\n\n\n\n\n\n\n\n\nDec 28, 2024\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nApr 10, 2024\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nApr 7, 2024\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this blog named goodrock having listing of posts.\n\n\n\n\n\n\n\n\n\n\n\n\nmemo_verse\n\n\n\n\n\n\n\n\n\n\n\nDec 28, 2024\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nmapStorage\n\n\n\n\n\n\n\n\n\n\n\nJan 23, 2025\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\n\n\n\n\nApr 7, 2024\n\n\nTristan O’Malley\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\n\n\n\n\n\n\n\n\nApr 10, 2024\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\nmemo_verse_DEV\n\n\n\n\n\n\n\n\n\n\n\nJan 23, 2025\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nverseWorker\n\n\n\n\n\n\n\n\n\n\n\nJan 23, 2025\n\n\ngranPiero\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "posts/memo_verse/index.html",
+    "href": "posts/memo_verse/index.html",
+    "title": "memo_verse",
+    "section": "",
+    "text": "This is on-your-device-only-persistent-memory of bible references, that you accumulate on the fly. However one distinct memory zone per browser\n\nTODO: use cachedMap althrough"
+  },
+  {
+    "objectID": "posts/welcome/index.html",
+    "href": "posts/welcome/index.html",
+    "title": "Welcome To My Blog",
+    "section": "",
+    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
+  },
+  {
+    "objectID": "posts/memo_verse_dev/index.html",
+    "href": "posts/memo_verse_dev/index.html",
+    "title": "memo_verse_DEV",
+    "section": "",
+    "text": "This is on-your-device-only-persistent-memory of bible references, that you accumulate on the fly. However one distinct memory zone per browser TODO: use cachedMap althrough"
   }
 ]

@@ -178,6 +178,7 @@ class mStorage {
     this.#defaultKeyId  = defaultKeyId;
     this.#initValue     = initValue;
     this.#Xurlbase      = 'https://jsfapi.netlify.app/.netlify/functions/bgw';
+//    this.#Xurlbase      = 'https://bg_worker.pjafischer.workers.dev/bgw/search';
     
     this.asPayload = null;  // Initialize the data property
 
@@ -309,6 +310,9 @@ class mStorage {
   async fetchParallel() {
   // references is #asEntry;
     const references = this.cachedValue;
+    
+    // Record the start time
+    const startTime = Date.now();
 
     const fetchPromises = references.map(async (entry) => {
       // destructure one record being an array[2]
@@ -336,6 +340,13 @@ class mStorage {
     // set asPayload when all promises are fulfilled
 //    this.asPayload = await Promise.all(fetchPromises);
     this.asPayload = Promise.all(fetchPromises);
+    
+    // Record the end time
+    const endTime = Date.now();
+    // Calculate the response time
+    const responseTime = endTime - startTime;
+    console.log(1000*responseTime);
+    
     return this.asPayload //is optional
   }; // end of async function
     

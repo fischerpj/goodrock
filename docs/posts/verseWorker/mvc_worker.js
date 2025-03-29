@@ -81,7 +81,6 @@ class App {
         break;
       default:
         console.log( "added NOT null input " + inputValue);
-
         this.m_data.addValue = this.m_data.from_ObjectsArray_(this.m_data.build_ObjectsArray_(inputValue));
         this.m_data.returnFetchParallel(this.m_data.addValue)
         .then(data => {
@@ -177,8 +176,11 @@ class mStorage {
     this.#version       = '0.1.5 v_ui, m_init_load_, getPayload, fetchParallel '; 
     this.#defaultKeyId  = defaultKeyId;
     this.#initValue     = initValue;
-    this.#Xurlbase      = 'https://jsfapi.netlify.app/.netlify/functions/bgw';
-//    this.#Xurlbase      = 'https://bg_worker.pjafischer.workers.dev/bgw/search';
+//    this.#Xurlbase      = 'https://jsfapi.netlify.app/.netlify/functions/bgw';
+    this.#Xurlbase      = 'https://bg_worker.pjafischer.workers.dev/bgw/search';
+
+///// https://jsfapi.netlify.app/.netlify/functions/bgw?param=ps42:5!KJV
+///// https://bg_worker.pjafischer.workers.dev/bgw/search?param=ps12
     
     this.asPayload = null;  // Initialize the data property
 
