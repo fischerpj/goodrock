@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "goodrock for netlify",
   "scripts": {
-    "start": "hugo server",
     "build": "hugo"
   },
   "dependencies": {
