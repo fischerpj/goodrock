@@ -1,0 +1,24 @@
+[
+  {
+    "listing": "/index.html",
+    "items": [
+      "/posts/mapStorage/index.html",
+      "/posts/memo_verse_dev/index.html",
+      "/posts/verseWorker/index.html",
+      "/posts/memo_verse/index.html",
+      "/posts/post-with-code/index.html",
+      "/posts/welcome/index.html"
+    ]
+  },
+  {
+    "listing": "/about.html",
+    "items": [
+      "/posts/memo_verse/index.html",
+      "/posts/mapStorage/index.html",
+      "/posts/welcome/index.html",
+      "/posts/post-with-code/index.html",
+      "/posts/memo_verse_dev/index.html",
+      "/posts/verseWorker/index.html"
+    ]
+  }
+]

@@ -1,0 +1,33 @@
+[build]
+command = 'hugo'
+publish = 'public'
+[build.environment]
+HUGO_VERSION = '0.99.0'
+
+[context]
+[context.branch-deploy]
+command = 'hugo -F -b $DEPLOY_PRIME_URL'
+
+[context.deploy-preview]
+command = 'hugo -F -b $DEPLOY_PRIME_URL'
+
+[context.production]
+[context.production.environment]
+HUGO_ENV = 'production'
+
+[functions]
+node_bundler = 'esbuild'
+
+# THIS FIXES the no-cors issue
+# The following redirect is intended for use with most SPAs that handle
+# routing internally.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  # Define which paths this specific [[headers]] block will cover.
+  for = "/*"
+    [headers.values]
+    Access-Control-Allow-Origin = "*"
