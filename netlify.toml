@@ -1,15 +1,6 @@
 [build]
-command = 'quarto render'
-publish = 'public'
-[build.environment]
-
-[context]
-[context.branch-deploy]
-
-[context.deploy-preview]
-
-[context.production]
-[context.production.environment]
+  command = "curl -sSL https://quarto.org/download/latest/linux | bash && quarto render"
+  publish = "_site"
 
 [functions]
 node_bundler = 'esbuild'
