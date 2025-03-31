@@ -1,6 +1,9 @@
 project:
   type: website
   output-dir: public
+  render:
+    - "*.qmd"
+    - "!memo_verse_dev/index.qmd"
 
 website:
   title: "goodrock"
@@ -9,7 +12,7 @@ website:
       - about.qmd
       - icon: github
         href: https://github.com/
-
+    
 format:
   html:
     theme: 

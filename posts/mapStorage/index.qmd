@@ -6,7 +6,7 @@ categories: [bible]
 image: "brain.jpg"
 ---
 
-> Now based on fast_mvc.js rather than mvc2.js and class Refs instead of mapStorage.
+> powered by the logic of \_fast_mvc.js\_ and the api from '[https://jsfapi.netlify.app/.netlify/functions/bgw';](https://jsfapi.netlify.app/.netlify/functions/bgw';)
 >
 > format: html: comments: utterances: repo: "fischerpj/ynot"
 

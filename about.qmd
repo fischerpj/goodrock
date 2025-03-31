@@ -13,3 +13,5 @@ about:
 ---
 
 About this blog named *goodrock* having *listing of posts.*
+
+For web performance, Netlify is preferred over Github Pages.
