@@ -1,0 +1,4 @@
+- source: project
+  netlify:
+    - id: fb5822cc-661f-4edb-b2fc-8fbc4ad1a262
+      url: 'https://goodrock.netlify.app'
