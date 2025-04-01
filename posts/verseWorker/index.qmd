@@ -6,7 +6,7 @@ categories: [bible]
 image: "brain.jpg"
 ---
 
->   MEMORIZE on the fly your **bible references** in one persistent sandbox per browser and domain. Cloudflare WORKER API targeted by *mvc_worker.js*. cf '[https://bg_worker.pjafischer.workers.dev/bgw/search'](https://bg_worker.pjafischer.workers.dev/bgw/search').
+MEMORIZE on the fly your **bible references** in one persistent sandbox _per browser and domain_. Cloudflare WORKER API targeted by *mvc_worker.js*. cf '[https://bg_worker.pjafischer.workers.dev/bgw/search'](https://bg_worker.pjafischer.workers.dev/bgw/search').
 
 ::: {#mainAnchor}
 :::
