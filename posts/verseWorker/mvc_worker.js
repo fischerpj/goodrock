@@ -177,7 +177,7 @@ class mStorage {
     this.#defaultKeyId  = defaultKeyId;
     this.#initValue     = initValue;
 //    this.#Xurlbase      = 'https://jsfapi.netlify.app/.netlify/functions/bgw';
-    this.#Xurlbase      = 'https://bg_worker.pjafischer.workers.dev/bgw/search';
+    this.#Xurlbase      = 'https://bg_worker.pjafischer.workers.dev/passage/';
 
 ///// https://jsfapi.netlify.app/.netlify/functions/bgw?param=ps42:5!KJV
 ///// https://bg_worker.pjafischer.workers.dev/bgw/search?param=ps12
@@ -204,7 +204,7 @@ class mStorage {
     } else {
       // Fallback initialization if refidArray doesn't exist
       this.#refSource = 'refDefault';
-      this.cachedValue = new Array([[`${this.#initValue}`, { refid: 'gen1:1', Xurl: `${this.#Xurlbase}?param=${item.refid}`, ts: '2025-01-20T09:28:00Z', category: 'biblical' }]]);
+      this.cachedValue = new Array([[`${this.#initValue}`, { refid: 'gen1:1', Xurl: `${this.#Xurlbase}?search=${item.refid}`, ts: '2025-01-20T09:28:00Z', category: 'biblical' }]]);
     }
   } // END of constructor
   
@@ -258,7 +258,7 @@ class mStorage {
     const result = arr.map(item => [
       item.refid, 
       { refid: item.refid, 
-        Xurl: `${this.#Xurlbase}?param=${item.refid}`, 
+        Xurl: `${this.#Xurlbase}?search=${item.refid}`, 
         ts: item.ts, 
         category: 'biblical'}
       ]);
