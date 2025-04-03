@@ -1,0 +1,1 @@
+Sitemap: https://goodrock.netlify.app/sitemap.xml
