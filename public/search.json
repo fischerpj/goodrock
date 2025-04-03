@@ -21,18 +21,25 @@
     "text": "powered by the logic of _fast_mvc.js_ and the api from ’https://jsfapi.netlify.app/.netlify/functions/bgw’;\nformat: html: comments: utterances: repo: “fischerpj/ynot”"
   },
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this blog named goodrock having listing of posts.\nFor web performance, Netlify is preferred over Github Pages.\n\n\n\n\n\n\n\n\n\n\n\n\nmapStorage\n\n\n\n\n\n\n\n\n\n\n\nJan 23, 2025\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nmemo_verse\n\n\n\n\n\n\n\n\n\n\n\nDec 28, 2024\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nverseWorker\n\n\n\n\n\n\n\n\n\n\n\nApr 1, 2025\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\n\n\n\n\nApr 7, 2024\n\n\nTristan O’Malley\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\n\n\n\n\n\n\n\n\nApr 10, 2024\n\n\nHarlow Malloc\n\n\n\n\n\n\nNo matching items"
-  },
-  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "goodrock",
     "section": "",
-    "text": "verseWorker\n\n\n\n\n\n\nbible\n\n\n\n\n\n\n\n\n\nApr 1, 2025\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nmapStorage\n\n\n\n\n\n\nbible\n\n\n\n\n\n\n\n\n\nJan 23, 2025\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nmemo_verse\n\n\n\n\n\n\nbible\n\n\n\n\n\n\n\n\n\nDec 28, 2024\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nApr 10, 2024\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nApr 7, 2024\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
+    "text": "verseWorker\n\n\n\n\n\n\nbible\n\n\n\n\n\n\n\n\n\nApr 1, 2025\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nmapStorage\n\n\n\n\n\n\nbible\n\n\n\n\n\n\n\n\n\nJan 23, 2025\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\ncheck_this\n\n\n\n\n\n\nbible\n\n\n\n\n\n\n\n\n\nDec 28, 2024\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nmemo_verse\n\n\n\n\n\n\nbible\n\n\n\n\n\n\n\n\n\nDec 28, 2024\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nApr 10, 2024\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nApr 7, 2024\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this blog named goodrock having listing of posts.\nFor web performance, Netlify is preferred over Github Pages.\n\n\n\n\n\n\n\n\n\n\n\n\ncheck_this\n\n\n\n\n\n\n\n\n\n\n\nDec 28, 2024\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nmapStorage\n\n\n\n\n\n\n\n\n\n\n\nJan 23, 2025\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nmemo_verse\n\n\n\n\n\n\n\n\n\n\n\nDec 28, 2024\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nverseWorker\n\n\n\n\n\n\n\n\n\n\n\nApr 1, 2025\n\n\ngranPiero\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\n\n\n\n\nApr 7, 2024\n\n\nTristan O’Malley\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\n\n\n\n\n\n\n\n\nApr 10, 2024\n\n\nHarlow Malloc\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "posts/check_this/index.html",
+    "href": "posts/check_this/index.html",
+    "title": "check_this",
+    "section": "",
+    "text": "This checks your localStorage"
   },
   {
     "objectID": "posts/memo_verse/index.html",

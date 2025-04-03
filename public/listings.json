@@ -1,22 +1,24 @@
 [
   {
+    "listing": "/index.html",
+    "items": [
+      "/posts/verseWorker/index.html",
+      "/posts/mapStorage/index.html",
+      "/posts/check_this/index.html",
+      "/posts/memo_verse/index.html",
+      "/posts/post-with-code/index.html",
+      "/posts/welcome/index.html"
+    ]
+  },
+  {
     "listing": "/about.html",
     "items": [
+      "/posts/check_this/index.html",
       "/posts/mapStorage/index.html",
       "/posts/memo_verse/index.html",
       "/posts/verseWorker/index.html",
       "/posts/welcome/index.html",
       "/posts/post-with-code/index.html"
-    ]
-  },
-  {
-    "listing": "/index.html",
-    "items": [
-      "/posts/verseWorker/index.html",
-      "/posts/mapStorage/index.html",
-      "/posts/memo_verse/index.html",
-      "/posts/post-with-code/index.html",
-      "/posts/welcome/index.html"
     ]
   }
 ]

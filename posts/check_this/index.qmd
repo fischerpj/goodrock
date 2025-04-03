@@ -1,0 +1,19 @@
+---
+title: "check_this"
+author: "granPiero" 
+date: "2024-12-28"
+categories: [bible]
+image: "brain.jpg"
+format: 
+  html:
+    comments:
+      utterances: 
+        repo: "fischerpj/ynot"
+---
+
+> This checks your localStorage
+
+::: {#mainAnchor}
+:::
+
+<script src="storage_display.js"></script>
