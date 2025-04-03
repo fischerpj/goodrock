@@ -1,4 +1,4 @@
-// fast_mvc.js
+// mvc_worker.js as in verseWorker
 // m_things belong to Model
 // v_things belong to View
 // c_things belong to Controller
@@ -510,10 +510,15 @@ class View {
 document.addEventListener('DOMContentLoaded', () => {
 
 const app = new App();
-  app.m_init_load_();
+///  app.m_init_load_();
 //  app.v_lastPayload();
+const refs = app.m_data.from_ObjectsArray_();
+  console.log(JSON.stringify(refs));
 
-  console.log(app);
+const fetchs = app.m_data.returnFetchParallel(refs)
+.then((res)=>console.log(JSON.stringify(res)));
+
+  
 
 
 }) // end of DOM listener
