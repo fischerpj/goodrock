@@ -518,7 +518,6 @@ const refs = app.m_data.from_ObjectsArray_();
 const fetchs = app.m_data.returnFetchParallel(refs)
 .then((res)=>console.log(JSON.stringify(res)));
 
-  
-
+console.log("Toto");
 
 }) // end of DOM listener
