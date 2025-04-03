@@ -510,13 +510,16 @@ class View {
 document.addEventListener('DOMContentLoaded', () => {
 
 const app = new App();
-///  app.m_init_load_();
+  app.m_init_load_();
 //  app.v_lastPayload();
+
+/*
 const refs = app.m_data.from_ObjectsArray_();
   console.log(JSON.stringify(refs));
 
 const fetchs = app.m_data.returnFetchParallel(refs)
 .then((res)=>console.log(JSON.stringify(res)));
+*/
 
 console.log("Toto");
 
