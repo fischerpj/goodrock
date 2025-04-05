@@ -15,7 +15,7 @@ class App {
     this.m_data = new mStorage();
     this.v_ui = new View();
     this.c_addEventListeners();
-    this.version = '0.2.3 write_storage'; 
+    this.version = '0.3.0.2 throttle'; 
 
   } // end of constructor
 
@@ -152,10 +152,15 @@ class App {
       const refidSet = new Set();
       
       const myload = Array.from(data);
+      console.log(myload);
+
       myload.forEach((element) => {
         const [key,value] = element;
         refidSet.add(key);
       });
+
+    console.log(Array.from(refidSet));
+
     return Array.from(refidSet);
     })
   }
@@ -177,7 +182,7 @@ class mStorage {
     this.#defaultKeyId  = defaultKeyId;
     this.#initValue     = initValue;
 //    this.#Xurlbase      = 'https://jsfapi.netlify.app/.netlify/functions/bgw';
-    this.#Xurlbase      = 'https://bg_worker.pjafischer.workers.dev/passage/';
+    this.#Xurlbase      = 'https://apiwork.pjafischer.workers.dev/passage/';
 
 ///// https://jsfapi.netlify.app/.netlify/functions/bgw?param=ps42:5!KJV
 ///// https://bg_worker.pjafischer.workers.dev/bgw/search?param=ps12
@@ -204,7 +209,9 @@ class mStorage {
     } else {
       // Fallback initialization if refidArray doesn't exist
       this.#refSource = 'refDefault';
-      this.cachedValue = new Array([[`${this.#initValue}`, { refid: 'gen1:1', Xurl: `${this.#Xurlbase}?search=${item.refid}`, ts: '2025-01-20T09:28:00Z', category: 'biblical' }]]);
+//      this.cachedValue = new Array([[`${this.#initValue}`, { refid: '${this.#initValue}', Xurl: `${this.#Xurlbase}?search=${this.#initValue}`, ts: '2025-01-20T09:28:00Z', category: 'biblical' }]]);
+      this.cachedValue = new Array([`${this.#initValue}`, { refid: `${this.#initValue}`, Xurl: `${this.#Xurlbase}?search=${this.#initValue}`, ts: '2025-01-20T09:28:00Z', category: 'biblical' }]);
+      this.write_storage_();
     }
   } // END of constructor
   
@@ -286,6 +293,8 @@ class mStorage {
       const [key, value] = entry;
       if (value && value.Xurl) {
         try {
+          // WAIT
+         new Promise(resolve => setTimeout(resolve, 10));          
           const response = await fetch(value.Xurl);
           if (response.ok) {
             const payload = await response.json();
@@ -513,14 +522,15 @@ const app = new App();
   app.m_init_load_();
 //  app.v_lastPayload();
 
+  console.log(app);
+
 /*
 const refs = app.m_data.from_ObjectsArray_();
+  console.log(refs);
   console.log(JSON.stringify(refs));
+
 
 const fetchs = app.m_data.returnFetchParallel(refs)
 .then((res)=>console.log(JSON.stringify(res)));
 */
-
-console.log("Toto");
-
 }) // end of DOM listener

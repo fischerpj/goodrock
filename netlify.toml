@@ -1,17 +1,6 @@
-[build]
-  command = "curl -sSL https://quarto.org/download/latest/linux | bash && quarto render"
-  publish = "_site"
-
-[functions]
-node_bundler = 'esbuild'
-
 # THIS FIXES the no-cors issue
 # The following redirect is intended for use with most SPAs that handle
 # routing internally.
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
 
 [[headers]]
   # Define which paths this specific [[headers]] block will cover.

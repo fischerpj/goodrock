@@ -176,8 +176,8 @@ class mStorage {
     this.#version       = '0.1.5 v_ui, m_init_load_, getPayload, fetchParallel '; 
     this.#defaultKeyId  = defaultKeyId;
     this.#initValue     = initValue;
-//    this.#Xurlbase      = 'https://jsfapi.netlify.app/.netlify/functions/bgw';
-    this.#Xurlbase      = 'https://bg_worker.pjafischer.workers.dev/passage/';
+    this.#Xurlbase      = 'https://jsfapi.netlify.app/.netlify/functions/bgw';
+//    this.#Xurlbase      = 'https://bg_worker.pjafischer.workers.dev/passage/';
 
 ///// https://jsfapi.netlify.app/.netlify/functions/bgw?param=ps42:5!KJV
 ///// https://bg_worker.pjafischer.workers.dev/bgw/search?param=ps12
@@ -286,6 +286,8 @@ class mStorage {
       const [key, value] = entry;
       if (value && value.Xurl) {
         try {
+          // WAIT
+////          new Promise(resolve => setTimeout(resolve, 50));          
           const response = await fetch(value.Xurl);
           if (response.ok) {
             const payload = await response.json();
