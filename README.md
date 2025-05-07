@@ -1,4 +1,4 @@
-# README goodrock
+# README goodrock is legacy
 
 ### logs
 
